@@ -3,11 +3,14 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginInProgress, setLoginInProgress] = useState(false);
+
+  const router = useRouter();
 
   async function handleFormSubmit(ev) {
     ev.preventDefault();
@@ -16,13 +19,12 @@ export default function LoginPage() {
     const res = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/",
       redirect: false,
     });
 
-    console.log(res);
-
     setLoginInProgress(false);
+
+    router.push("/");
   }
   return (
     <section className="mt-8">
