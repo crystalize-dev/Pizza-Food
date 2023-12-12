@@ -2,26 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+section.hero {
+  @apply grid;
+  @apply text-lg;
+  @apply font-semibold;
+  @apply gap-8;
+
+  grid-template-columns: 0.4fr 0.6fr;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+  @apply block w-full my-2 rounded-xl transition-all;
+  @apply border p-2 border-gray-300 bg-gray-200;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+input[type="email"]:disabled,
+input[type="text"]:disabled,
+input[type="password"]:disabled {
+  @apply bg-zinc-300;
+}
+
+button {
+  @apply block w-full text-gray-700 font-semibold transition-all;
+  @apply border rounded-xl border-gray-300 px-6 py-2;
+}
+button[type="submit"],
+.submit {
+  @apply border-0 bg-primary text-white;
+}
+button[type="submit"]:disabled,
+.submit:disabled {
+  @apply cursor-wait bg-zinc-500;
 }
