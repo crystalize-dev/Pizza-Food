@@ -4,6 +4,7 @@ import React from "react";
 import { AppProvider } from "../components/AppContext";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
+import { Toaster } from "react-hot-toast";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["500", "700", "900"] });
 
@@ -18,6 +19,8 @@ export default function RootLayout({ children }) {
       <body className={roboto.className}>
         <main className="max-w-4xl mx-auto p-4">
           <AppProvider>
+            <Toaster />
+
             <Header />
 
             {children}

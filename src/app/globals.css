@@ -11,17 +11,13 @@ section.hero {
   grid-template-columns: 0.4fr 0.6fr;
 }
 
-input[type="email"],
-input[type="text"],
-input[type="password"] {
-  @apply block w-full my-2 rounded-xl transition-all;
-  @apply border p-2 border-gray-300 bg-gray-200;
+input {
+  @apply block w-full my-2 rounded-xl focus:border-black/70 outline-none transition-all;
+  @apply border-2 p-2 border-black/10 bg-transparent;
 }
 
-input[type="email"]:disabled,
-input[type="text"]:disabled,
-input[type="password"]:disabled {
-  @apply bg-zinc-300;
+input:disabled {
+  @apply bg-zinc-200 border-0 text-gray-500;
 }
 
 button {
@@ -34,5 +30,5 @@ button[type="submit"],
 }
 button[type="submit"]:disabled,
 .submit:disabled {
-  @apply cursor-wait bg-zinc-500;
+  @apply cursor-wait bg-zinc-500 border-0;
 }

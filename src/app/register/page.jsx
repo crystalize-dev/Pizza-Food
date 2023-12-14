@@ -24,7 +24,6 @@ export default function RegisterPage() {
     });
 
     setLoading(false);
-    console.log(response);
 
     if (response.ok) {
       setUserCreated(true);

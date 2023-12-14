@@ -22,6 +22,8 @@ export default function LoginPage() {
       redirect: false,
     });
 
+    console.log(res);
+
     setLoginInProgress(false);
 
     router.push("/");

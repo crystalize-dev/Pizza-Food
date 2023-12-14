@@ -17,7 +17,14 @@ export default function Header() {
           className="relative h-16 w-44 font-semibold text-2xl text-primary"
           href="/"
         >
-          <Image src="/logo.png" alt="logo" layout="fill" objectFit="contain" />
+          <Image
+            src="/logo.png"
+            alt="logo"
+            className="h-full object-contain"
+            priority={true}
+            width={250}
+            height={250}
+          />
         </Link>
         <Link href={"/"}>Home</Link>
         <Link href={""}>Menu</Link>
