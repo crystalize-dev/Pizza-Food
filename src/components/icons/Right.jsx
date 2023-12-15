@@ -1,8 +1,6 @@
 import React from "react";
 
-export default function Right({
-  className = "w-6 h-6 group-hover:translate-x-1 transition-all",
-}) {
+export default function Right({ className = "w-6 h-6" }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

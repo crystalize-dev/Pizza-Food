@@ -11,24 +11,10 @@ section.hero {
   grid-template-columns: 0.4fr 0.6fr;
 }
 
-input {
-  @apply block w-full my-2 rounded-xl focus:border-black/70 outline-none transition-all;
-  @apply border-2 p-2 border-black/10 bg-transparent;
+.special-label {
+  transition: all 0.2s ease 0s;
 }
 
-input:disabled {
-  @apply bg-zinc-200 border-0 text-gray-500;
-}
-
-button {
-  @apply block w-full text-gray-700 font-semibold transition-all;
-  @apply border rounded-xl border-gray-300 px-6 py-2;
-}
-button[type="submit"],
-.submit {
-  @apply border-0 bg-primary text-white;
-}
-button[type="submit"]:disabled,
-.submit:disabled {
-  @apply cursor-wait bg-zinc-500 border-0;
+input:focus + p, .highlight {
+  color: #f13a01;
 }

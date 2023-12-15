@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Right from "../icons/Right";
+import Button from "../../components/Layout/Button";
 
 export default function Hero() {
   return (
@@ -18,15 +19,16 @@ export default function Hero() {
           delicious joy in life
         </p>
 
-        <div className="flex gap-1 items-center">
-          <button className="uppercase text-sm whitespace-nowrap items-center group flex gap-1 bg-primary text-white px-4 py-2 rounded-full">
+        <div className="flex gap-4 items-center">
+          <Button>
             Order now
             <Right />
-          </button>
-          <button className="flex group border-none gap-1 items-center text-gray-600">
+          </Button>
+
+          <div className="cursor-pointer flex group border-none gap-1 items-center text-gray-600">
             Learn more
             <Right />
-          </button>
+          </div>
         </div>
       </div>
 
@@ -34,8 +36,9 @@ export default function Hero() {
         <Image
           src={"/pizza.png"}
           alt={"pizza"}
-          layout="fill"
-          objectFit="contain"
+          className="w-full"
+          width={250}
+          height={250}
         />
       </div>
     </section>

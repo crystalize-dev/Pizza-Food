@@ -3,6 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Button from "./Button";
 
 export default function Header() {
   const session = useSession();
@@ -35,21 +36,16 @@ export default function Header() {
         {status === "authenticated" && (
           <>
             <Link href="/profile" className="whitespace-nowrap">
-              Hello, {userData.email}
+              {userName ? "Hello, " + userName.split(" ")[0] : userData.email}
             </Link>
-            <button
-              className="bg-primary text-white rounded-full px-8 py-2"
-              onClick={() => signOut()}
-            >
-              Logout
-            </button>
+            <Button onClick={() => signOut()}>Logout</Button>
           </>
         )}
         {status === "unauthenticated" && (
           <>
             <Link href={"/login"}>Login</Link>
             <Link
-              className="bg-primary text-white rounded-full px-8 py-2"
+              className="bg-primary border-2 transition-all border-solid border-transparent hover:border-primary hover:text-primary hover:bg-transparent text-white rounded-full px-8 py-2"
               href={"/register"}
             >
               Register

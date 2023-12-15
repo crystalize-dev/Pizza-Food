@@ -1,4 +1,4 @@
-import { Roboto } from "next/font/google";
+import { Rubik } from "next/font/google";
 import "./globals.css";
 import React from "react";
 import { AppProvider } from "../components/AppContext";
@@ -6,7 +6,10 @@ import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { Toaster } from "react-hot-toast";
 
-const roboto = Roboto({ subsets: ["latin"], weight: ["500", "700", "900"] });
+const roboto = Rubik({
+  subsets: ["latin"],
+  weight: ["500", "700", "900"],
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -17,7 +20,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <main className="max-w-4xl mx-auto p-4">
+        <main className="max-w-4xl mx-auto p-4 w-screen h-screen flex flex-col">
           <AppProvider>
             <Toaster />
 

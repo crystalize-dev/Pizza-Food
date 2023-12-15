@@ -1,5 +1,3 @@
 # VIOFOOD
 
-# TOFIX:
-
-- Session on auth
+# tODO
