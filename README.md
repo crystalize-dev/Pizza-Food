@@ -1,3 +1,6 @@
 # VIOFOOD
 
-# tODO
+# Todo:
+
+- Refactor
+- Logo and font sync

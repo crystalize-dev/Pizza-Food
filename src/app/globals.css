@@ -3,18 +3,35 @@
 @tailwind utilities;
 
 section.hero {
-  @apply grid;
-  @apply text-lg;
-  @apply font-semibold;
-  @apply gap-8;
+    @apply grid;
+    @apply text-lg;
+    @apply font-semibold;
+    @apply gap-8;
 
-  grid-template-columns: 0.4fr 0.6fr;
+    grid-template-columns: 0.4fr 0.6fr;
 }
 
+:root {
+    --main: #f13a01;
+}
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--main);
+}
 .special-label {
-  transition: all 0.2s ease 0s;
+    transition: all 0.2s ease 0s;
 }
 
-input:focus + p, .highlight {
-  color: #f13a01;
+input:focus + p,
+.highlight {
+    color: #f13a01;
+}
+
+@media (max-width: 980px) {
+    ::-webkit-scrollbar {
+        width: 0;
+    }
 }
