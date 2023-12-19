@@ -1,7 +1,7 @@
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import React from "react";
-import { AppProvider } from "../components/AppContext";
+import { AppProvider } from '@/components/AppContext';
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { Toaster } from "react-hot-toast";
