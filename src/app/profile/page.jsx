@@ -6,6 +6,7 @@ import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Button from '../../components/Layout/Button';
 import { DataContext } from '@/components/AppContext';
+import Link from 'next/link';
 
 export default function ProfilePage() {
     const { userData, setUserData } = useContext(DataContext);
@@ -17,6 +18,7 @@ export default function ProfilePage() {
     );
     const [phoneNumber, setPhoneNumber] = useState(userData?.phone);
     const [address, setAddress] = useState(userData?.address);
+    const [isAdmin, setAdmin] = useState(userData?.admin);
     const [fetching, setFetching] = useState(false);
 
     const handleProfileInfoUpdate = async (e) => {
@@ -87,94 +89,124 @@ export default function ProfilePage() {
     };
 
     return (
-        <section className="mt-8">
-            <h1 className="mb-4 text-center text-4xl text-primary">Profile</h1>
-            <div className="mx-auto flex max-w-md flex-col items-center">
-                <div className="flex flex-col items-center gap-4 md:flex-row">
-                    <div className="flex w-full flex-col items-center self-start rounded-lg p-2 md:w-fit">
-                        <div className="relative h-36 w-32">
-                            {image && (
-                                <Image
-                                    className="mb-2 rounded-lg object-bottom"
-                                    src={image}
-                                    alt="logo"
-                                    priority={true}
-                                    fill={true}
-                                />
-                            )}
-                        </div>
-
-                        <label className={'w-full'}>
-                            <input
-                                disabled={fetching}
-                                accept="image/*"
-                                multiple={false}
-                                type="file"
-                                className="hidden"
-                                onChange={handleImageChange}
+        <section className={'flex flex-col'}>
+            <h1 className="my-8 text-center text-4xl text-primary">
+                {isAdmin ? 'Admin Profile' : 'Profile'}
+            </h1>
+            <div className="flex flex-col items-center justify-between gap-16 px-8 md:flex-row md:items-start">
+                <div className="flex w-full flex-col items-center rounded-lg p-2 md:w-fit">
+                    <div className="relative h-36 w-32">
+                        {image && (
+                            <Image
+                                className="mb-2 rounded-lg object-bottom"
+                                src={image}
+                                alt="logo"
+                                priority={true}
+                                fill={true}
                             />
-                            <span
-                                className={`mt-2 block w-44 cursor-pointer rounded-lg border p-2 text-center transition-all hover:bg-black hover:text-white md:w-full ${
-                                    fetching &&
-                                    'cursor-not-allowed bg-gray-300 text-white hover:bg-gray-300'
-                                }`}
-                            >
-                                Edit
-                            </span>
-                        </label>
+                        )}
                     </div>
 
-                    <form
-                        className="flex grow flex-col gap-3"
-                        onSubmit={handleProfileInfoUpdate}
-                    >
-                        <Input
-                            withLabel={true}
-                            label={'Email'}
-                            type="email"
-                            disabled={true}
-                            value={email}
-                        />
-                        <Input
-                            placeholder="John Anderson"
-                            withLabel={true}
+                    <label className={'w-full'}>
+                        <input
                             disabled={fetching}
-                            label={'Your name'}
-                            type="text"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
+                            accept="image/*"
+                            multiple={false}
+                            type="file"
+                            className="hidden"
+                            onChange={handleImageChange}
                         />
-                        <PhoneInput
-                            disabled={fetching}
-                            specialLabel="Phone Number"
-                            country={'ru'}
-                            containerClass="text-sm text-gray-400 transition-all"
-                            onFocus={(e) => changeLabelColor(e)}
-                            onBlur={(e) => changeLabelColor(e)}
-                            inputClass="w-full outline outline-2 text-black text-base text-font-semibold focus:outline-primary hover:outline-black/80 disabled:outline-black/20 outline-black/40 disabled:cursor-not-allowed bg-transparent disabled:text-gray-400 rounded-lg px-4 py-2 transition-all"
-                            value={phoneNumber}
-                            onChange={setPhoneNumber}
-                        />
-
-                        <Input
-                            disabled={fetching}
-                            placeholder="Moscow city, 13"
-                            label="Address"
-                            withLabel={true}
-                            type="text"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                        />
-
-                        <Button
-                            disabled={fetching}
-                            type="submit"
-                            className="mt-2 !w-full !rounded-lg"
+                        <span
+                            className={`mx-auto mt-2 block w-44 cursor-pointer rounded-lg border p-2 text-center transition-all hover:bg-black hover:text-white md:w-full ${
+                                fetching &&
+                                'cursor-not-allowed bg-gray-300 text-white hover:bg-gray-300'
+                            }`}
                         >
-                            Save
-                        </Button>
-                    </form>
+                            Edit
+                        </span>
+                    </label>
                 </div>
+
+                <form
+                    className="flex w-full grow flex-col gap-3"
+                    onSubmit={handleProfileInfoUpdate}
+                >
+                    <Input
+                        withLabel={true}
+                        label={'Email'}
+                        type="email"
+                        disabled={true}
+                        value={email}
+                    />
+                    <Input
+                        placeholder="John Anderson"
+                        withLabel={true}
+                        disabled={fetching}
+                        label={'Your name'}
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                    />
+                    <PhoneInput
+                        disabled={fetching}
+                        specialLabel="Phone Number"
+                        country={'ru'}
+                        containerClass="text-sm text-gray-400 transition-all"
+                        onFocus={(e) => changeLabelColor(e)}
+                        onBlur={(e) => changeLabelColor(e)}
+                        inputClass="w-full outline outline-2 text-black text-base text-font-semibold focus:outline-primary hover:outline-black/80 disabled:outline-black/20 outline-black/40 disabled:cursor-not-allowed bg-transparent disabled:text-gray-400 rounded-lg px-4 py-2 transition-all"
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                    />
+
+                    <Input
+                        disabled={fetching}
+                        placeholder="Moscow city, 13"
+                        label="Address"
+                        withLabel={true}
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                    />
+
+                    <Button
+                        disabled={fetching}
+                        type="submit"
+                        className="mt-2 !w-full !rounded-lg"
+                    >
+                        Save
+                    </Button>
+                </form>
+
+                {isAdmin && (
+                    <div
+                        className={
+                            'flex w-full flex-col items-center gap-4 whitespace-nowrap md:w-fit'
+                        }
+                    >
+                        <Button
+                            variant={'black'}
+                            type={'button'}
+                            className={'!rounded-lg'}
+                        >
+                            <Link href={'/categories'}>Categories</Link>
+                        </Button>
+                        <Button
+                            type={'button'}
+                            variant={'black'}
+                            className={'!rounded-lg'}
+                        >
+                            <Link href={'menu-items'}>Menu Items</Link>
+                        </Button>
+                        <Button
+                            type={'button'}
+                            variant={'black'}
+                            className={'!rounded-lg'}
+                        >
+                            <Link href={'/users'}>Users</Link>
+                        </Button>
+                    </div>
+                )}
             </div>
         </section>
     );

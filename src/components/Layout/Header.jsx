@@ -104,13 +104,15 @@ export default function Header() {
                     <>
                         <Link
                             href="/profile"
-                            className="whitespace-nowrap transition-all hover:text-primary"
+                            className="whitespace-nowrap text-black transition-all hover:text-primary"
                         >
                             {userData.name
                                 ? 'Hello, ' + userData.name.split(' ')[0]
                                 : userData.email}
                         </Link>
-                        <Button onClick={() => signOut()}>Logout</Button>
+                        <Button variant={'submit'} onClick={() => signOut()}>
+                            Logout
+                        </Button>
                     </>
                 )}
             </nav>

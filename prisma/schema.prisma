@@ -45,6 +45,7 @@ model User {
   address         String?
   accounts        Account[]
   sessions        Session[]
+  admin           Boolean   @default(false)
 }
 
 model VerificationToken {

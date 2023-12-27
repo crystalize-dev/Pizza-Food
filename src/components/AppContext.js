@@ -2,7 +2,7 @@
 import { SessionProvider, useSession } from 'next-auth/react';
 import React from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 export const DataContext = React.createContext(null);
 
@@ -29,16 +29,13 @@ export function DataProvider({ children }) {
                             image: data.image,
                             address: data.address,
                             phone: data.phone,
-                            email: data.email
+                            email: data.email,
+                            admin: data.admin
                         });
                     }
                 })
-                .catch((err) => {
-                    setUserData({
-                        name: session.data.user.name,
-                        email: session.data.user.email,
-                        image: session.data.user.image
-                    });
+                .catch(() => {
+                    toast.error('Error on connecting to DataBase!');
                 });
         }
     }, [session, session.status]);
