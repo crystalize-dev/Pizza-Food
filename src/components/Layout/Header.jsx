@@ -1,19 +1,17 @@
 'use client';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from './Button';
 import Icon from '../icon/Icon';
 import Modal from './Modal';
+import { DataContext } from '@/components/AppContext';
 
 export default function Header() {
     const [sidebar, setSidebar] = useState(false);
 
-    const session = useSession();
-    const status = session.status;
-    const userData = session?.data?.user;
-    const userName = userData?.name;
+    const { userData, session } = useContext(DataContext);
 
     return (
         <header className="flex h-16 items-center justify-between">
@@ -65,7 +63,17 @@ export default function Header() {
                     </Link>
                 </div>
 
-                <div className="md:hidden">
+                <div className="flex items-center gap-2 md:hidden">
+                    {session.status === 'authenticated' && (
+                        <Link href={'/profile'}>
+                            <Icon
+                                path={
+                                    'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z'
+                                }
+                            />
+                        </Link>
+                    )}
+
                     <Icon
                         onClick={() => setSidebar(true)}
                         className={
@@ -77,20 +85,7 @@ export default function Header() {
             </nav>
 
             <nav className="hidden items-center gap-4 px-4 text-inactive md:flex">
-                {status === 'authenticated' && (
-                    <>
-                        <Link
-                            href="/profile"
-                            className="whitespace-nowrap transition-all hover:text-primary"
-                        >
-                            {userName
-                                ? 'Hello, ' + userName.split(' ')[0]
-                                : userData.email}
-                        </Link>
-                        <Button onClick={() => signOut()}>Logout</Button>
-                    </>
-                )}
-                {status === 'unauthenticated' && (
+                {session.status === 'unauthenticated' ? (
                     <>
                         <Link
                             href={'/login'}
@@ -99,11 +94,23 @@ export default function Header() {
                             Login
                         </Link>
                         <Link
-                            className="rounded-full border-2 border-solid border-transparent bg-primary px-8 py-2 text-white transition-all hover:border-primary hover:bg-transparent hover:text-primary"
+                            className="whitespace-nowrap rounded-full border-2 border-solid border-transparent bg-primary px-8 py-2 text-white transition-all hover:border-primary hover:bg-transparent hover:text-primary"
                             href={'/register'}
                         >
                             Register
                         </Link>
+                    </>
+                ) : (
+                    <>
+                        <Link
+                            href="/profile"
+                            className="whitespace-nowrap transition-all hover:text-primary"
+                        >
+                            {userData.name
+                                ? 'Hello, ' + userData.name.split(' ')[0]
+                                : userData.email}
+                        </Link>
+                        <Button onClick={() => signOut()}>Logout</Button>
                     </>
                 )}
             </nav>

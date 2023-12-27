@@ -2,5 +2,5 @@
 
 # Todo:
 
-- Refactor
+- Invalid or unexpected token
 - Logo and font sync
