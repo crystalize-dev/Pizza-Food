@@ -3,8 +3,8 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import Button from '../../components/Layout/Button';
-import Input from '../../components/Layout/Input';
+import Button from '../../components/UI/Button';
+import Input from '../../components/UI/Input';
 import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
@@ -55,6 +55,11 @@ export default function RegisterPage() {
         );
     };
 
+    const authWithGoogle = () => {
+        setLoading(true);
+        signIn('google', { callbackUrl: '/' });
+    };
+
     return (
         <section className="mt-8">
             <h1 className="mb-8 text-center text-4xl text-primary">Register</h1>
@@ -94,8 +99,8 @@ export default function RegisterPage() {
                 <button
                     type="button"
                     disabled={loading}
-                    onClick={() => signIn('google', { callbackUrl: '/' })}
-                    className="flex justify-center gap-4 rounded-lg border px-4 py-2 transition-all hover:border-black hover:bg-black hover:text-white"
+                    onClick={authWithGoogle}
+                    className="flex justify-center gap-4 rounded-lg border px-4 py-2 transition-all hover:border-black hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:border-transparent disabled:bg-gray-300 disabled:text-white"
                 >
                     <Image
                         src="/google.png"

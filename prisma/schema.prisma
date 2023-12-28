@@ -48,6 +48,11 @@ model User {
   admin           Boolean   @default(false)
 }
 
+model Categories {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+}
+
 model VerificationToken {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   identifier String

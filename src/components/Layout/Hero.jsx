@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import Button from '../../components/Layout/Button';
+import Button from '@/components/UI/Button';
 
 export default function Hero() {
     return (
@@ -20,11 +20,13 @@ export default function Hero() {
                 </p>
 
                 <div className="flex items-center gap-4">
-                    <Button>Order now</Button>
+                    <Button type={'button'} variant={'submit'}>
+                        Order now
+                    </Button>
 
-                    <div className="group flex cursor-pointer items-center gap-1 border-none text-gray-600">
+                    <Button className={'hover:!text-primary'}>
                         Learn more
-                    </div>
+                    </Button>
                 </div>
             </div>
 

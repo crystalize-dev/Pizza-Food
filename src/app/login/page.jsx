@@ -4,8 +4,8 @@ import Image from 'next/image';
 import React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/Layout/Input';
-import Button from '../../components/Layout/Button';
+import Input from '@/components/UI/Input';
+import Button from '../../components/UI/Button';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -39,6 +39,11 @@ export default function LoginPage() {
             error: (err) => `${err}`
         });
     }
+    const authWithGoogle = () => {
+        setLoading(true);
+        signIn('google', { callbackUrl: '/' });
+    };
+
     return (
         <section className="mt-8">
             <h1 className="mb-8 text-center text-4xl text-primary">Login</h1>
@@ -80,8 +85,9 @@ export default function LoginPage() {
                 </div>
                 <button
                     type="button"
-                    onClick={() => signIn('google', { callbackUrl: '/' })}
-                    className="flex justify-center gap-4 rounded-lg border px-4 py-2 transition-all hover:border-black hover:bg-black hover:text-white"
+                    disabled={loading}
+                    onClick={authWithGoogle}
+                    className="flex justify-center gap-4 rounded-lg border px-4 py-2 transition-all hover:border hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:border-transparent disabled:bg-gray-300 disabled:text-white"
                 >
                     <Image
                         src={'/google.png'}

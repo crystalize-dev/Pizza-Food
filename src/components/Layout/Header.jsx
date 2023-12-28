@@ -3,15 +3,15 @@ import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext, useState } from 'react';
-import Button from './Button';
+import Button from '../UI/Button';
 import Icon from '../icon/Icon';
-import Modal from './Modal';
-import { DataContext } from '@/components/AppContext';
+import Modal from '../UI/Modal';
+import { UserDataContext } from '@/components/AppContext';
 
 export default function Header() {
     const [sidebar, setSidebar] = useState(false);
 
-    const { userData, session } = useContext(DataContext);
+    const { userData, session } = useContext(UserDataContext);
 
     return (
         <header className="flex h-16 items-center justify-between">
@@ -66,21 +66,11 @@ export default function Header() {
                 <div className="flex items-center gap-2 md:hidden">
                     {session.status === 'authenticated' && (
                         <Link href={'/profile'}>
-                            <Icon
-                                path={
-                                    'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z'
-                                }
-                            />
+                            <Icon icon={'profile'} />
                         </Link>
                     )}
 
-                    <Icon
-                        onClick={() => setSidebar(true)}
-                        className={
-                            'cursor-pointer transition-all hover:text-primary'
-                        }
-                        path={'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'}
-                    />
+                    <Icon onClick={() => setSidebar(true)} icon={'menu'} />
                 </div>
             </nav>
 

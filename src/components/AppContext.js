@@ -4,17 +4,20 @@ import React from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
 import toast, { Toaster } from 'react-hot-toast';
 
-export const DataContext = React.createContext(null);
+export const UserDataContext = React.createContext(null);
+export const MenuContext = React.createContext(null);
 
 export function AppProvider({ children }) {
     return (
         <SessionProvider>
-            <DataProvider>{children}</DataProvider>
+            <MenuProvider>
+                <UserDataProvider>{children}</UserDataProvider>
+            </MenuProvider>
         </SessionProvider>
     );
 }
 
-export function DataProvider({ children }) {
+function UserDataProvider({ children }) {
     const [userData, setUserData] = React.useState(null);
     const session = useSession();
 
@@ -41,7 +44,7 @@ export function DataProvider({ children }) {
     }, [session, session.status]);
 
     return (
-        <DataContext.Provider value={{ userData, setUserData, session }}>
+        <UserDataContext.Provider value={{ userData, setUserData, session }}>
             <Toaster />
 
             {(session.status === 'authenticated' && !userData) ||
@@ -54,6 +57,60 @@ export function DataProvider({ children }) {
             ) : (
                 children
             )}
-        </DataContext.Provider>
+        </UserDataContext.Provider>
+    );
+}
+
+function MenuProvider({ children }) {
+    const [menuData, setMenuData] = React.useState({ categories: [] });
+
+    React.useEffect(() => {
+        fetch('/api/categories', { method: 'GET' })
+            .then((res) => res.json())
+            .then((data) => {
+                setMenuData({ categories: data });
+            })
+            .catch(() => {
+                toast.error('Error on connecting to DataBase!');
+            });
+    }, []);
+
+    const addCategory = (category) => {
+        setMenuData({
+            ...menuData,
+            categories: [...menuData.categories, category]
+        });
+    };
+
+    const updateCategory = (categoryId, newValue) => {
+        setMenuData({
+            ...menuData,
+            categories: [
+                ...menuData.categories.map((category) => {
+                    if (category.id === categoryId)
+                        return { id: categoryId, name: newValue };
+                    else return category;
+                })
+            ]
+        });
+    };
+
+    const deleteCategory = (categoryId) => {
+        setMenuData({
+            ...menuData,
+            categories: [
+                ...menuData.categories.filter(
+                    (category) => category.id !== categoryId
+                )
+            ]
+        });
+    };
+
+    return (
+        <MenuContext.Provider
+            value={{ menuData, addCategory, updateCategory, deleteCategory }}
+        >
+            {children}
+        </MenuContext.Provider>
     );
 }

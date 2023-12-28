@@ -1,24 +1,24 @@
 'use client';
 import React, { useContext, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
-import Input from '../../components/Layout/Input';
+import Input from '../../components/UI/Input';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import Button from '../../components/Layout/Button';
-import { DataContext } from '@/components/AppContext';
-import Link from 'next/link';
+import Button from '../../components/UI/Button';
+import { UserDataContext } from '@/components/AppContext';
+import AdminPanel from '@/components/Layout/AdminPanel';
 
 export default function ProfilePage() {
-    const { userData, setUserData } = useContext(DataContext);
+    const { userData, setUserData, session } = useContext(UserDataContext);
 
     const [userName, setUserName] = useState(userData.name);
     const [email, setEmail] = useState(userData.email);
     const [image, setImage] = useState(
         userData.image ? userData.image : '/default-avatar.jpg'
     );
-    const [phoneNumber, setPhoneNumber] = useState(userData?.phone);
-    const [address, setAddress] = useState(userData?.address);
-    const [isAdmin, setAdmin] = useState(userData?.admin);
+    const [phoneNumber, setPhoneNumber] = useState(userData.phone);
+    const [address, setAddress] = useState(userData.address);
+    const [isAdmin, setAdmin] = useState(userData.admin);
     const [fetching, setFetching] = useState(false);
 
     const handleProfileInfoUpdate = async (e) => {
@@ -90,10 +90,13 @@ export default function ProfilePage() {
 
     return (
         <section className={'flex flex-col'}>
-            <h1 className="my-8 text-center text-4xl text-primary">
+            <h1 className="mb-8 text-center text-4xl text-primary">
                 {isAdmin ? 'Admin Profile' : 'Profile'}
             </h1>
-            <div className="flex flex-col items-center justify-between gap-16 px-8 md:flex-row md:items-start">
+
+            {session.data.user.admin && <AdminPanel />}
+
+            <div className="mx-auto mt-12 flex w-full max-w-xl flex-col items-center justify-between gap-16 px-8 md:flex-row md:items-start">
                 <div className="flex w-full flex-col items-center rounded-lg p-2 md:w-fit">
                     <div className="relative h-36 w-32">
                         {image && (
@@ -103,6 +106,7 @@ export default function ProfilePage() {
                                 alt="logo"
                                 priority={true}
                                 fill={true}
+                                sizes={''}
                             />
                         )}
                     </div>
@@ -128,11 +132,10 @@ export default function ProfilePage() {
                 </div>
 
                 <form
-                    className="flex w-full grow flex-col gap-3"
+                    className="mt-3 flex w-full grow flex-col gap-8 md:w-fit"
                     onSubmit={handleProfileInfoUpdate}
                 >
                     <Input
-                        withLabel={true}
                         label={'Email'}
                         type="email"
                         disabled={true}
@@ -140,7 +143,6 @@ export default function ProfilePage() {
                     />
                     <Input
                         placeholder="John Anderson"
-                        withLabel={true}
                         disabled={fetching}
                         label={'Your name'}
                         type="text"
@@ -151,7 +153,7 @@ export default function ProfilePage() {
                         disabled={fetching}
                         specialLabel="Phone Number"
                         country={'ru'}
-                        containerClass="text-sm text-gray-400 transition-all"
+                        containerClass="text-sm -mt-4 text-gray-400 transition-all"
                         onFocus={(e) => changeLabelColor(e)}
                         onBlur={(e) => changeLabelColor(e)}
                         inputClass="w-full outline outline-2 text-black text-base text-font-semibold focus:outline-primary hover:outline-black/80 disabled:outline-black/20 outline-black/40 disabled:cursor-not-allowed bg-transparent disabled:text-gray-400 rounded-lg px-4 py-2 transition-all"
@@ -163,7 +165,6 @@ export default function ProfilePage() {
                         disabled={fetching}
                         placeholder="Moscow city, 13"
                         label="Address"
-                        withLabel={true}
                         type="text"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
@@ -177,36 +178,6 @@ export default function ProfilePage() {
                         Save
                     </Button>
                 </form>
-
-                {isAdmin && (
-                    <div
-                        className={
-                            'flex w-full flex-col items-center gap-4 whitespace-nowrap md:w-fit'
-                        }
-                    >
-                        <Button
-                            variant={'black'}
-                            type={'button'}
-                            className={'!rounded-lg'}
-                        >
-                            <Link href={'/categories'}>Categories</Link>
-                        </Button>
-                        <Button
-                            type={'button'}
-                            variant={'black'}
-                            className={'!rounded-lg'}
-                        >
-                            <Link href={'menu-items'}>Menu Items</Link>
-                        </Button>
-                        <Button
-                            type={'button'}
-                            variant={'black'}
-                            className={'!rounded-lg'}
-                        >
-                            <Link href={'/users'}>Users</Link>
-                        </Button>
-                    </div>
-                )}
             </div>
         </section>
     );
