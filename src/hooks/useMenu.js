@@ -1,110 +1,107 @@
-import { useContext, useState } from 'react';
-import { MenuContext } from '@/components/AppContext';
+import React from 'react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
-export const useMenu = ({ name, description, image, price, clearInputs }) => {
-    const [loading, setLoading] = useState(false);
-    const { menuData, addMenuItem, updateMenuItem, deleteMenuItem } =
-        useContext(MenuContext);
+export const useMenu = () => {
+    const [menuData, setMenuData] = React.useState({
+        categories: [],
+        menu: []
+    });
 
-    const handleNewMenuItem = async (e) => {
-        e.preventDefault();
-
-        if (!name) {
-            toast.error('Provide a name!');
-            return;
-        }
-
-        const regex = /^[1-9]\d*$/;
-
-        if (!regex.test(price)) {
-            toast.error('Provide a correct price!');
-            return;
-        }
-
-        setLoading(true);
-        const promise = fetch('/api/menu', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: name,
-                description: description,
-                image: image,
-                price: parseInt(price)
+    React.useEffect(() => {
+        const newData = {};
+        axios
+            .get('/api/categories')
+            .then((res) => {
+                if (res.status === 200) {
+                    newData['categories'] = res.data;
+                } else {
+                    toast.error('Error on DataBase!');
+                }
             })
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                addMenuItem(data.menuItem);
-                clearInputs();
-            });
+            .then(() => {
+                axios
+                    .get('/api/menu')
+                    .then((res) => {
+                        if (res.status === 200) {
+                            newData['menu'] = res.data;
+                        } else {
+                            toast.error('Error on DataBase!');
+                        }
+                    })
+                    .then(() => {
+                        setMenuData(newData);
+                    })
+                    .catch((err) => toast.error(err));
+            })
+            .catch((err) => toast.error(err));
+    }, []);
 
-        await toast.promise(promise, {
-            loading: 'Saving...',
-            success: 'Menu item saved!',
-            error: 'Some error occurred!'
+    const addCategory = (category) => {
+        setMenuData({
+            ...menuData,
+            categories: [...menuData.categories, category]
         });
-
-        setLoading(false);
     };
 
-    const handleUpdate = async (menuItem) => {
-        setLoading(true);
-
-        const promise = fetch('/api/menu', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: menuItem.id, data: menuItem })
-        }).then((res) => {
-            if (res.ok) {
-                updateMenuItem(menuItem.id, menuItem);
-            }
+    const updateCategory = (categoryId, newValue) => {
+        setMenuData({
+            ...menuData,
+            categories: [
+                ...menuData.categories.map((category) => {
+                    if (category.id === categoryId)
+                        return { id: categoryId, name: newValue };
+                    else return category;
+                })
+            ]
         });
-
-        let res;
-        await toast.promise(promise, {
-            loading: 'Updating...',
-            success: () => {
-                res = true;
-                return 'Menu item updated!';
-            },
-            error: () => {
-                res = false;
-                return 'Some error occurred!';
-            }
-        });
-
-        setLoading(false);
-
-        return res;
     };
 
-    const handleDelete = async (id) => {
-        setLoading(true);
-
-        const promise = fetch('/api/menu', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id })
-        }).then(() => {
-            deleteMenuItem(id);
+    const deleteCategory = (categoryId) => {
+        setMenuData({
+            ...menuData,
+            categories: [
+                ...menuData.categories.filter(
+                    (category) => category.id !== categoryId
+                )
+            ]
         });
+    };
 
-        await toast.promise(promise, {
-            loading: 'Deleting...',
-            success: 'Menu item deleted!',
-            error: 'Some error occurred!'
+    const addMenuItem = (menuItem) => {
+        setMenuData({ ...menuData, menu: [...menuData.menu, menuItem] });
+    };
+
+    const updateMenuItem = (id, menuItem) => {
+        setMenuData({
+            ...menuData,
+            menu: [
+                ...menuData.menu.map((item) => {
+                    if (item.id === id) return menuItem;
+                    else return item;
+                })
+            ]
         });
+    };
 
-        setLoading(false);
+    const deleteMenuItem = (id) => {
+        setMenuData({
+            ...menuData,
+            menu: [...menuData.menu.filter((item) => item.id !== id)]
+        });
     };
 
     return {
         menuData,
-        handleNewMenuItem,
-        loading,
-        setLoading,
-        handleUpdate,
-        handleDelete
+        categoriesActions: {
+            addCategory,
+            updateCategory,
+            deleteCategory
+        },
+        menuActions: {
+            addMenuItem,
+            updateMenuItem,
+            deleteMenuItem
+        }
     };
 };

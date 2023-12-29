@@ -24,7 +24,7 @@ export async function POST(req) {
         }
     });
 
-    return NextResponse.json({ menuItem }, { status: 200 });
+    return NextResponse.json(menuItem, { status: 200 });
 }
 export async function GET() {
     return NextResponse.json(await prisma.menuItems.findMany());

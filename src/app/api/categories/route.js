@@ -17,7 +17,7 @@ export async function POST(req) {
 
     const category = await prisma.categories.create({ data: { name: name } });
 
-    return NextResponse.json({ category }, { status: 200 });
+    return NextResponse.json(category, { status: 200 });
 }
 export async function GET() {
     return NextResponse.json(await prisma.categories.findMany());

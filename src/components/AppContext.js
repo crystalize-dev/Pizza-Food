@@ -3,6 +3,8 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import React from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
 import toast, { Toaster } from 'react-hot-toast';
+import { useMenu } from '@/hooks/useMenu';
+import axios from 'axios';
 
 export const UserDataContext = React.createContext(null);
 export const MenuContext = React.createContext(null);
@@ -11,42 +13,35 @@ export function AppProvider({ children }) {
     return (
         <SessionProvider>
             <MenuProvider>
-                <UserDataProvider>{children}</UserDataProvider>
+                <DataProvider>
+                    <Toaster />
+
+                    {children}
+                </DataProvider>
             </MenuProvider>
         </SessionProvider>
     );
 }
 
-function UserDataProvider({ children }) {
+function DataProvider({ children }) {
     const [userData, setUserData] = React.useState(null);
     const session = useSession();
 
     React.useEffect(() => {
         if (session.status === 'authenticated') {
-            fetch('/api/profile', { method: 'GET' })
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data) {
-                        setUserData({
-                            name: data.name,
-                            image: data.image,
-                            address: data.address,
-                            phone: data.phone,
-                            email: data.email,
-                            admin: data.admin
-                        });
+            axios
+                .get('/api/profile')
+                .then((res) => {
+                    if (res.status === 200) {
+                        setUserData(res.data);
                     }
                 })
-                .catch(() => {
-                    toast.error('Error on connecting to DataBase!');
-                });
+                .catch((err) => toast.error(err));
         }
     }, [session, session.status]);
 
     return (
         <UserDataContext.Provider value={{ userData, setUserData, session }}>
-            <Toaster />
-
             {(session.status === 'authenticated' && !userData) ||
             session.status === 'loading' ? (
                 <div
@@ -62,86 +57,14 @@ function UserDataProvider({ children }) {
 }
 
 function MenuProvider({ children }) {
-    const [menuData, setMenuData] = React.useState({
-        categories: [],
-        menu: []
-    });
-
-    React.useEffect(() => {
-        fetch('/api/categories', { method: 'GET' })
-            .then((res) => res.json())
-            .then((data) => {
-                setMenuData({ ...menuData, categories: data });
-            })
-            .catch(() => {
-                toast.error('Error on connecting to DataBase!');
-            });
-    }, []);
-
-    const addCategory = (category) => {
-        setMenuData({
-            ...menuData,
-            categories: [...menuData.categories, category]
-        });
-    };
-
-    const updateCategory = (categoryId, newValue) => {
-        setMenuData({
-            ...menuData,
-            categories: [
-                ...menuData.categories.map((category) => {
-                    if (category.id === categoryId)
-                        return { id: categoryId, name: newValue };
-                    else return category;
-                })
-            ]
-        });
-    };
-
-    const deleteCategory = (categoryId) => {
-        setMenuData({
-            ...menuData,
-            categories: [
-                ...menuData.categories.filter(
-                    (category) => category.id !== categoryId
-                )
-            ]
-        });
-    };
-
-    const addMenuItem = (menuItem) => {
-        setMenuData({ ...menuData, menu: [...menuData.menu, menuItem] });
-    };
-
-    const updateMenuItem = (id, menuItem) => {
-        setMenuData({
-            ...menuData,
-            menu: [
-                ...menuData.menu.map((item) => {
-                    if (item.id === id) return menuItem;
-                    else return item;
-                })
-            ]
-        });
-    };
-
-    const deleteMenuItem = (id) => {
-        setMenuData({
-            ...menuData,
-            menu: [...menuData.menu.filter((item) => item.id !== id)]
-        });
-    };
+    const { menuData, categoriesActions, menuActions } = useMenu();
 
     return (
         <MenuContext.Provider
             value={{
                 menuData,
-                addCategory,
-                updateCategory,
-                deleteCategory,
-                addMenuItem,
-                updateMenuItem,
-                deleteMenuItem
+                categoriesActions,
+                menuActions
             }}
         >
             {children}

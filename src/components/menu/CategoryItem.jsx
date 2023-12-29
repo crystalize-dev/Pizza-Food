@@ -75,19 +75,19 @@ const CategoryItem = ({
             {active === category.id ? (
                 <div className={'flex items-center gap-2'}>
                     <Icon
-                        className={`rounded-lg bg-green-400 transition-all hover:text-white ${
+                        className={`rounded-lg bg-green-400 text-green-600 transition-all hover:text-white ${
                             fetching &&
-                            'pointer-events-none cursor-not-allowed bg-gray-400'
+                            '!cursor-not-allowed !bg-gray-400 !text-gray-600'
                         }`}
-                        onClick={() => handleConfirm()}
+                        onClick={!fetching ? () => handleConfirm() : undefined}
                         icon={'ok'}
                     />
                     <Icon
-                        className={`rounded-lg bg-red-400 transition-all hover:text-white ${
+                        className={`rounded-lg bg-red-400 text-red-600 transition-all hover:text-white ${
                             fetching &&
-                            'pointer-events-none cursor-not-allowed bg-gray-400'
+                            '!cursor-not-allowed !bg-gray-400 !text-gray-600'
                         }`}
-                        onClick={() => handleCancel()}
+                        onClick={!fetching ? () => handleCancel() : undefined}
                         icon={'close'}
                     />
                 </div>

@@ -1,24 +1,18 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
 import CategoryItem from '@/components/menu/CategoryItem';
 import { AnimatePresence } from 'framer-motion';
-import { useCategories } from '@/hooks/useCategories';
+import { useFetchCategories } from '@/hooks/useFetchCategories';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 
 const Page = () => {
-    const {
-        handleUpdate,
-        handleDelete,
-        handleNewCategory,
-        loading,
-        editing,
-        setEditing,
-        categoryName,
-        setCategoryName,
-        menuData
-    } = useCategories();
+    const [currentEditing, setCurrentEditing] = useState(null);
+    const [categoryName, setCategoryName] = useState('');
+
+    const { handleUpdate, handleDelete, handleNewCategory, loading, menuData } =
+        useFetchCategories({ categoryName, setCategoryName });
 
     return (
         <AdminPanelWrapper title={'categories'} isAdmin={true}>
@@ -53,8 +47,8 @@ const Page = () => {
                             key={category.id}
                             index={index}
                             category={category}
-                            active={editing}
-                            setActive={setEditing}
+                            active={currentEditing}
+                            setActive={setCurrentEditing}
                             handleUpdate={handleUpdate}
                             handleDelete={handleDelete}
                             fetching={loading}

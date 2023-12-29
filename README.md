@@ -4,11 +4,11 @@
 
 - Menu page
 - Users page
-- Initial fetching data (all data wait) 
 
 <hr/>
 
 # Not in rush
 
 - Pizza loader
+- ID on images posting
 - Invalid or unexpected token ?

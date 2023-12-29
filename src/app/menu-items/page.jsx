@@ -1,11 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
-import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
-import ImageUpload from '@/components/UI/ImageUpload';
 import { AnimatePresence } from 'framer-motion';
-import { useMenu } from '@/hooks/useMenu';
+import { useFetchMenu } from '@/hooks/useFetchMenu';
+import MenuItem from '@/components/menu/MenuItem';
 
 const Page = () => {
     const [name, setName] = useState('');
@@ -27,7 +26,7 @@ const Page = () => {
         setLoading,
         handleUpdate,
         handleDelete
-    } = useMenu({
+    } = useFetchMenu({
         name,
         description,
         image,
@@ -40,45 +39,17 @@ const Page = () => {
 
     return (
         <AdminPanelWrapper title={'menu-items'} isAdmin={true}>
-            <form
-                className={'my-16 flex h-fit w-full flex-col gap-8 md:flex-row'}
-                onSubmit={(e) => handleNewMenuItem(e)}
+            <Button
+                type={'button'}
+                variant={'submit'}
+                className={'my-8 !w-fit !rounded-lg'}
             >
-                <ImageUpload
-                    image={image}
-                    fetching={loading}
-                    setFetching={setLoading}
-                    onChange={onChangeMenuPhoto}
-                />
-
-                <div className={'flex w-full flex-col gap-8'}>
-                    <Input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        label={'Name'}
-                        placeholder={'Pepperoni pizza'}
-                    />
-                    <Input
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        label={'Description (optional)'}
-                        placeholder={'Very tasty!'}
-                    />
-                    <Input
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        label={'Base price'}
-                        placeholder={'10 $'}
-                    />
-                    <Button className={'!rounded-lg'} type={'submit'}>
-                        Save
-                    </Button>
-                </div>
-            </form>
+                Create new
+            </Button>
             <ul className={'flex w-full flex-col gap-2'}>
                 <AnimatePresence>
-                    {menuData.menu.map((item) => (
-                        <div key={item.id}>{item.name}</div>
+                    {menuData.menu.map((item, index) => (
+                        <MenuItem key={item.id} menuItem={item} index={index} />
                     ))}
                 </AnimatePresence>
             </ul>
