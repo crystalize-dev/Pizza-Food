@@ -26,7 +26,7 @@ const TimerButton = ({
                         clearInterval(timerRef.current);
                         setText(children);
                         setCountdown(10);
-                        cancelAction();
+                        cancelAction && cancelAction();
                     }
 
                     return prevCountdown - 1;

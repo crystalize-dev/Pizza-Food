@@ -3,6 +3,7 @@
 # Todo:
 
 - Menu page
+- Menu refactor
 - Users page
 
 <hr/>

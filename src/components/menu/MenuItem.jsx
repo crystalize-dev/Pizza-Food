@@ -2,8 +2,15 @@ import React from 'react';
 import Button from '@/components/UI/Button';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import TimerButton from '@/components/UI/TimerButton';
 
-export default function MenuItem({ menuItem, index, openModal }) {
+export default function MenuItem({
+    menuItem,
+    index,
+    openModal,
+    loading,
+    handleDeleteItem
+}) {
     const menuItemVariants = {
         visible: (i) => ({
             opacity: 1,
@@ -26,9 +33,9 @@ export default function MenuItem({ menuItem, index, openModal }) {
             exit={'hidden'}
             variants={menuItemVariants}
             custom={index}
-            className="flex w-full justify-between gap-4 rounded-lg bg-gray-100 py-2 pl-4 pr-2"
+            className="flex w-full justify-between gap-4 rounded-lg bg-gray-100 p-4"
         >
-            <div className="relative max-h-[8rem] min-h-[8rem] min-w-[8rem] max-w-[8rem]">
+            <div className="relative max-h-[10rem] min-h-[10rem] min-w-[10rem] max-w-[10rem]">
                 <Image
                     className="rounded-md object-contain"
                     src={menuItem.image ? menuItem.image : '/default-menu.png'}
@@ -38,7 +45,7 @@ export default function MenuItem({ menuItem, index, openModal }) {
                 />
             </div>
 
-            <div className={'max-h-[8rem] w-full overflow-hidden'}>
+            <div className={'max-h-[10rem] w-full overflow-hidden'}>
                 <h1 className={'text-xl font-bold capitalize'}>
                     {menuItem.name}
                 </h1>
@@ -47,16 +54,35 @@ export default function MenuItem({ menuItem, index, openModal }) {
                 </p>
             </div>
 
-            <div className={'flex grow flex-col items-end justify-between'}>
+            <div
+                className={'flex grow flex-col items-end justify-between gap-2'}
+            >
                 <Button
                     type={'button'}
                     variant={'inactive'}
-                    className={'!h-fit !w-fit !rounded-md'}
+                    disabled={loading}
+                    className={'!h-fit !w-full !rounded-md'}
+                    onClick={() => openModal(menuItem)}
                 >
                     Edit
                 </Button>
 
-                <p className={'pb-2 pr-2'}>{menuItem.price + '$'}</p>
+                <TimerButton
+                    type={'button'}
+                    variant={'inactive'}
+                    className={
+                        '!w-fit !rounded-md transition-all hover:bg-red-500'
+                    }
+                    disabled={loading}
+                    confirmAction={() => handleDeleteItem(menuItem.id)}
+                    loadingClass={'!bg-red-500'}
+                >
+                    Delete
+                </TimerButton>
+
+                <p className={'mt-4 pb-2 pr-2 text-lg font-semibold'}>
+                    {menuItem.price + '$'}
+                </p>
             </div>
         </motion.div>
     );

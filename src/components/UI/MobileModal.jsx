@@ -4,7 +4,7 @@ import Icon from '../icon/Icon';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 
-export default function Modal({ visible, setVisible }) {
+export default function MobileModal({ visible, setVisible }) {
     const session = useSession();
     const { status } = session;
 

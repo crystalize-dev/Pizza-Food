@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useContext, useState } from 'react';
 import Button from '../UI/Button';
 import Icon from '../icon/Icon';
-import Modal from '../UI/Modal';
+import MobileModal from '../UI/MobileModal';
 import { UserDataContext } from '@/components/AppContext';
 
 export default function Header() {
@@ -15,7 +15,7 @@ export default function Header() {
 
     return (
         <header className="flex max-h-[6rem] min-h-[6rem] items-center justify-between">
-            <Modal visible={sidebar} setVisible={setSidebar} />
+            <MobileModal visible={sidebar} setVisible={setSidebar} />
 
             <nav className="flex h-full w-full items-center justify-between gap-4 px-4 text-inactive md:justify-normal">
                 <Link className="relative h-full w-fit" href="/">
