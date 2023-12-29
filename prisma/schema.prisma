@@ -53,6 +53,14 @@ model Categories {
   name            String
 }
 
+model MenuItems {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String?
+  price           Int
+  image           String?
+}
+
 model VerificationToken {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   identifier String

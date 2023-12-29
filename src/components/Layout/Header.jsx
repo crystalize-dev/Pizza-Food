@@ -14,18 +14,15 @@ export default function Header() {
     const { userData, session } = useContext(UserDataContext);
 
     return (
-        <header className="flex h-16 items-center justify-between">
+        <header className="flex max-h-[6rem] min-h-[6rem] items-center justify-between">
             <Modal visible={sidebar} setVisible={setSidebar} />
 
-            <nav className="flex h-16 w-full items-center justify-between gap-4 px-4 text-inactive md:justify-normal">
-                <Link
-                    className="relative h-16 w-44 text-2xl font-semibold text-primary"
-                    href="/"
-                >
+            <nav className="flex h-full w-full items-center justify-between gap-4 px-4 text-inactive md:justify-normal">
+                <Link className="relative h-full w-fit" href="/">
                     <Image
                         src="/logo.png"
                         alt="logo"
-                        className="h-full object-contain"
+                        className="h-full w-fit scale-150 object-cover"
                         priority={true}
                         width={250}
                         height={250}
@@ -93,8 +90,8 @@ export default function Header() {
                 ) : (
                     <>
                         <Link
-                            href="/profile"
-                            className="whitespace-nowrap text-black transition-all hover:text-primary"
+                            href={'/profile'}
+                            className="whitespace-nowrap transition-all hover:text-primary"
                         >
                             {userData.name
                                 ? 'Hello, ' + userData.name.split(' ')[0]

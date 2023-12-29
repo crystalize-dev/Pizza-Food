@@ -1,11 +1,14 @@
-# VIOFOOD
-
-<hr/>
+<img src="./public/logo.png" style="width:256px;height: 256px;" alt="logo"/>
 
 # Todo:
 
-- Categories page refactor
-- Invalid or unexpected token
-- Initial fetching data (all data wait)
+- Menu page
+- Users page
+- Initial fetching data (all data wait) 
+
+<hr/>
+
+# Not in rush
+
 - Pizza loader
-- Logo and font sync
+- Invalid or unexpected token ?

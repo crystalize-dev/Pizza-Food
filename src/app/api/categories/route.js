@@ -25,8 +25,6 @@ export async function GET() {
 export async function PUT(req) {
     const data = await req.json();
 
-    const found = await prisma.categories.findFirst({ where: { id: data.id } });
-
     const res = await prisma.categories.update({
         where: { id: data.id },
         data: { name: data.name }

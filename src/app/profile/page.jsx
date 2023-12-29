@@ -2,11 +2,11 @@
 import React, { useContext, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import Input from '../../components/UI/Input';
-import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Button from '../../components/UI/Button';
 import { UserDataContext } from '@/components/AppContext';
-import AdminPanel from '@/components/Layout/AdminPanel';
+import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
+import ImageUpload from '@/components/UI/ImageUpload';
 
 export default function ProfilePage() {
     const { userData, setUserData, session } = useContext(UserDataContext);
@@ -18,7 +18,6 @@ export default function ProfilePage() {
     );
     const [phoneNumber, setPhoneNumber] = useState(userData.phone);
     const [address, setAddress] = useState(userData.address);
-    const [isAdmin, setAdmin] = useState(userData.admin);
     const [fetching, setFetching] = useState(false);
 
     const handleProfileInfoUpdate = async (e) => {
@@ -52,33 +51,9 @@ export default function ProfilePage() {
         setFetching(false);
     };
 
-    const handleImageChange = async (e) => {
-        const files = e.target.files;
-
-        const data = new FormData();
-        data.set('image', files[0]);
-        setFetching(true);
-        const promise = fetch('/api/upload', {
-            method: 'POST',
-            body: data
-        })
-            .then((res) => {
-                return res.json();
-            })
-            .then((link) => {
-                if (link) {
-                    setImage(link);
-                    setUserData({ ...userData, image: link });
-                }
-            });
-
-        await toast.promise(promise, {
-            loading: 'Loading...',
-            success: 'Uploaded!',
-            error: 'Some error occurred!'
-        });
-
-        setFetching(false);
+    const onChangeAvatar = (link) => {
+        setImage(link);
+        setUserData({ ...userData, image: link });
     };
 
     const changeLabelColor = (e) => {
@@ -89,47 +64,14 @@ export default function ProfilePage() {
     };
 
     return (
-        <section className={'flex flex-col'}>
-            <h1 className="mb-8 text-center text-4xl text-primary">
-                {isAdmin ? 'Admin Profile' : 'Profile'}
-            </h1>
-
-            {session.data.user.admin && <AdminPanel />}
-
+        <AdminPanelWrapper title={'profile'} isAdmin={session.data.user.admin}>
             <div className="mx-auto mt-12 flex w-full max-w-xl flex-col items-center justify-between gap-16 px-8 md:flex-row md:items-start">
-                <div className="flex w-full flex-col items-center rounded-lg p-2 md:w-fit">
-                    <div className="relative h-36 w-32">
-                        {image && (
-                            <Image
-                                className="mb-2 rounded-lg object-bottom"
-                                src={image}
-                                alt="logo"
-                                priority={true}
-                                fill={true}
-                                sizes={''}
-                            />
-                        )}
-                    </div>
-
-                    <label className={'w-full'}>
-                        <input
-                            disabled={fetching}
-                            accept="image/*"
-                            multiple={false}
-                            type="file"
-                            className="hidden"
-                            onChange={handleImageChange}
-                        />
-                        <span
-                            className={`mx-auto mt-2 block w-44 cursor-pointer rounded-lg border p-2 text-center transition-all hover:bg-black hover:text-white md:w-full ${
-                                fetching &&
-                                'cursor-not-allowed bg-gray-300 text-white hover:bg-gray-300'
-                            }`}
-                        >
-                            Edit
-                        </span>
-                    </label>
-                </div>
+                <ImageUpload
+                    image={image}
+                    fetching={fetching}
+                    setFetching={setFetching}
+                    onChange={onChangeAvatar}
+                />
 
                 <form
                     className="mt-3 flex w-full grow flex-col gap-8 md:w-fit"
@@ -179,6 +121,6 @@ export default function ProfilePage() {
                     </Button>
                 </form>
             </div>
-        </section>
+        </AdminPanelWrapper>
     );
 }

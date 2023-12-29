@@ -62,13 +62,16 @@ function UserDataProvider({ children }) {
 }
 
 function MenuProvider({ children }) {
-    const [menuData, setMenuData] = React.useState({ categories: [] });
+    const [menuData, setMenuData] = React.useState({
+        categories: [],
+        menu: []
+    });
 
     React.useEffect(() => {
         fetch('/api/categories', { method: 'GET' })
             .then((res) => res.json())
             .then((data) => {
-                setMenuData({ categories: data });
+                setMenuData({ ...menuData, categories: data });
             })
             .catch(() => {
                 toast.error('Error on connecting to DataBase!');
@@ -106,9 +109,40 @@ function MenuProvider({ children }) {
         });
     };
 
+    const addMenuItem = (menuItem) => {
+        setMenuData({ ...menuData, menu: [...menuData.menu, menuItem] });
+    };
+
+    const updateMenuItem = (id, menuItem) => {
+        setMenuData({
+            ...menuData,
+            menu: [
+                ...menuData.menu.map((item) => {
+                    if (item.id === id) return menuItem;
+                    else return item;
+                })
+            ]
+        });
+    };
+
+    const deleteMenuItem = (id) => {
+        setMenuData({
+            ...menuData,
+            menu: [...menuData.menu.filter((item) => item.id !== id)]
+        });
+    };
+
     return (
         <MenuContext.Provider
-            value={{ menuData, addCategory, updateCategory, deleteCategory }}
+            value={{
+                menuData,
+                addCategory,
+                updateCategory,
+                deleteCategory,
+                addMenuItem,
+                updateMenuItem,
+                deleteMenuItem
+            }}
         >
             {children}
         </MenuContext.Provider>

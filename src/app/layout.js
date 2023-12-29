@@ -11,7 +11,7 @@ const roboto = Rubik({
 });
 
 export const metadata = {
-    title: 'VIOFOOD - Best Pizza ever!',
+    title: 'Pizza Food - Best Pizza ever!',
     description: 'Pizza Pizza Pizza!'
 };
 
@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body className={roboto.className}>
-                <main className="wrapper mx-auto flex h-screen w-screen max-w-4xl flex-col gap-8 p-4">
+                <main className="wrapper mx-auto flex h-screen w-screen max-w-6xl flex-col gap-8 p-4">
                     <AppProvider>
                         <Header />
 
