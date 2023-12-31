@@ -2,16 +2,14 @@
 
 # Todo:
 
-- Schema for MenuItem
-- Menu page
 - Great refactor!!!
 - Users page
-
-<hr/>
 
 # Not in rush
 
 - Errors on fetch handling
-- Pizza loader
 - ID on images posting
+- Pizza loader
+- Icons on Categories
+  
 - Invalid or unexpected token ?
