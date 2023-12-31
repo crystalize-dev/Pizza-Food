@@ -55,10 +55,30 @@ model Categories {
 
 model MenuItems {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
+  name            String    @unique
   description     String?
   price           Int
   image           String?
+  sizes           Size[]
+  ingredients     Ingredient[]
+}
+
+model Size {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String    @unique
+  price           Int
+
+  MenuId          String    @db.ObjectId
+  menuItem        MenuItems @relation(fields: [MenuId], references: [id])
+}
+
+model Ingredient {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String    @unique
+  price           Int
+
+  MenuId          String    @db.ObjectId
+  menuItem        MenuItems @relation(fields: [MenuId], references: [id])
 }
 
 model VerificationToken {

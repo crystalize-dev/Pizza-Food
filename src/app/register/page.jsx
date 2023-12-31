@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
@@ -16,19 +17,18 @@ export default function RegisterPage() {
         e.preventDefault();
 
         setLoading(true);
-        const promice = fetch('/api/register', {
-            method: 'POST',
-            body: JSON.stringify({ email, password }),
-            headers: { 'Content-Type': 'application/json' }
-        }).then((res) => {
-            setLoading(false);
-            if (!res.ok) {
-                throw new Error('Please check your password and email!');
-            }
-        });
+        const promise = axios
+            .post('/api/register', { email, password })
+            .then((res) => {
+                if (res.status !== 200) {
+                    toast.error('Please check your password and email!');
+                }
+            });
+
+        setLoading(false);
 
         toast.promise(
-            promice,
+            promise,
             {
                 loading: 'Loading...',
                 success: (

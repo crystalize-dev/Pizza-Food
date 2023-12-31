@@ -30,6 +30,19 @@ input:focus + p,
     color: #f13a01;
 }
 
+.scrollable {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.scrollable::-webkit-scrollbar {
+    width: 9px;
+}
+.scrollable::-webkit-scrollbar-thumb {
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: var(--main);
+}
+
 @media (max-width: 980px) {
     ::-webkit-scrollbar {
         width: 0;

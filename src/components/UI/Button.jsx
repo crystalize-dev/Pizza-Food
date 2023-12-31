@@ -30,7 +30,7 @@ export default function Button({ variant, children, ...props }) {
     };
 
     return (
-        <button className={constructStyles()} {...otherProps}>
+        <button type={type} className={constructStyles()} {...otherProps}>
             {children}
         </button>
     );

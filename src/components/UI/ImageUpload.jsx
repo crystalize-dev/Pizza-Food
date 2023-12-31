@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const ImageUpload = ({ image, onChange, fetching, setFetching }) => {
     const handleImageChange = async (e) => {
@@ -11,18 +12,17 @@ const ImageUpload = ({ image, onChange, fetching, setFetching }) => {
         data.set('image', files[0]);
 
         setFetching(true);
-        const promise = fetch('/api/upload', {
-            method: 'POST',
-            body: data
-        })
+
+        const promise = axios
+            .post('/api/upload', data)
             .then((res) => {
-                return res.json();
-            })
-            .then((link) => {
-                if (link) {
-                    onChange && onChange(link);
+                if (res.status === 200) {
+                    onChange && onChange(res.data);
+                } else {
+                    toast.error('Error on DataBase!');
                 }
-            });
+            })
+            .catch((err) => toast.error(err));
 
         setFetching(false);
 
@@ -40,7 +40,7 @@ const ImageUpload = ({ image, onChange, fetching, setFetching }) => {
                     <Image
                         className="mb-2 rounded-lg border border-solid border-black/50 object-bottom"
                         src={image}
-                        alt="logo"
+                        alt="uploadedAvatar"
                         priority={true}
                         fill={true}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

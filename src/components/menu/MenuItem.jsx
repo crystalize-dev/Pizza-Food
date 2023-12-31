@@ -41,11 +41,12 @@ export default function MenuItem({
                     src={menuItem.image ? menuItem.image : '/default-menu.png'}
                     alt="item-img"
                     fill={true}
+                    priority={true}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
             </div>
 
-            <div className={'max-h-[10rem] w-full overflow-hidden'}>
+            <div className={'max-h-[10rem] w-full grow overflow-hidden'}>
                 <h1 className={'text-xl font-bold capitalize'}>
                     {menuItem.name}
                 </h1>

@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body className={roboto.className}>
-                <main className="wrapper mx-auto flex h-screen w-screen max-w-6xl flex-col gap-8 p-4">
+                <main className="mx-auto flex h-full w-full max-w-6xl flex-col gap-8 p-4">
                     <AppProvider>
                         <Header />
 

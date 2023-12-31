@@ -7,6 +7,7 @@ import Button from '../../components/UI/Button';
 import { UserDataContext } from '@/components/AppContext';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 import ImageUpload from '@/components/UI/ImageUpload';
+import axios from 'axios';
 
 export default function ProfilePage() {
     const { userData, setUserData, session } = useContext(UserDataContext);
@@ -22,25 +23,30 @@ export default function ProfilePage() {
 
     const handleProfileInfoUpdate = async (e) => {
         e.preventDefault();
+
         setFetching(true);
-        const promise = fetch('/api/profile', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+
+        const promise = axios
+            .post('/api/profile', {
                 name: userName,
                 image: image,
                 address: address,
                 phone: phoneNumber
             })
-        }).then(() => {
-            setUserData({
-                ...userData,
-                name: userName,
-                image: image,
-                phone: phoneNumber,
-                address: address
-            });
-        });
+            .then((res) => {
+                if (res.status === 200) {
+                    setUserData({
+                        ...userData,
+                        name: userName,
+                        image: image,
+                        phone: phoneNumber,
+                        address: address
+                    });
+                } else {
+                    toast.error('Error on DataBase!');
+                }
+            })
+            .catch((err) => toast.error(err));
 
         await toast.promise(promise, {
             loading: 'Saving...',

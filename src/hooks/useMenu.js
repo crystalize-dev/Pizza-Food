@@ -31,6 +31,7 @@ export const useMenu = () => {
                     })
                     .then(() => {
                         setMenuData(newData);
+                        console.log(newData);
                     })
                     .catch((err) => toast.error(err));
             })

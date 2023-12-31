@@ -17,15 +17,15 @@ export default function Header() {
         <header className="flex max-h-[6rem] min-h-[6rem] items-center justify-between">
             <MobileModal visible={sidebar} setVisible={setSidebar} />
 
-            <nav className="flex h-full w-full items-center justify-between gap-4 px-4 text-inactive md:justify-normal">
-                <Link className="relative h-full w-fit" href="/">
+            <nav className="flex h-full max-h-full w-full items-center justify-between gap-4 px-4 text-inactive md:justify-normal">
+                <Link className="relative h-24 w-24" href="/">
                     <Image
                         src="/logo.png"
                         alt="logo"
-                        className="h-full w-fit scale-150 object-cover"
                         priority={true}
-                        width={250}
-                        height={250}
+                        fill={true}
+                        className={'scale-150'}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 </Link>
 
