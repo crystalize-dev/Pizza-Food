@@ -18,24 +18,20 @@ export const useMenu = () => {
     const updateCategory = (categoryId, newValue) => {
         setMenuData({
             ...menuData,
-            categories: [
-                ...menuData.categories.map((category) => {
-                    if (category.id === categoryId)
-                        return { id: categoryId, name: newValue };
-                    else return category;
-                })
-            ]
+            categories: menuData.categories.map((category) => {
+                if (category.id === categoryId)
+                    return { id: categoryId, name: newValue };
+                else return category;
+            })
         });
     };
 
     const deleteCategory = (categoryId) => {
         setMenuData({
             ...menuData,
-            categories: [
-                ...menuData.categories.filter(
-                    (category) => category.id !== categoryId
-                )
-            ]
+            categories: menuData.categories.filter(
+                (category) => category.id !== categoryId
+            )
         });
     };
 
@@ -46,19 +42,17 @@ export const useMenu = () => {
     const updateMenuItem = (id, menuItem) => {
         setMenuData({
             ...menuData,
-            menu: [
-                ...menuData.menu.map((item) => {
-                    if (item.id === id) return menuItem;
-                    else return item;
-                })
-            ]
+            menu: menuData.menu.map((item) => {
+                if (item.id === id) return menuItem;
+                else return item;
+            })
         });
     };
 
     const deleteMenuItem = (id) => {
         setMenuData({
             ...menuData,
-            menu: [...menuData.menu.filter((item) => item.id !== id)]
+            menu: menuData.menu.filter((item) => item.id !== id)
         });
     };
 

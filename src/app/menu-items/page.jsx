@@ -3,8 +3,8 @@ import React, { useContext, useState } from 'react';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 import Button from '@/components/UI/Button';
 import { AnimatePresence } from 'framer-motion';
-import MenuItem from '@/components/menu/MenuItem';
-import AdminMenuModal from '@/components/UI/Modal/AdminMenuModal';
+import MenuItem from '@/components/SingleItems/MenuItem';
+import MenuModal from '@/components/UI/Modal/MenuModal';
 import { MenuContext } from '@/components/AppContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -47,7 +47,7 @@ const Page = () => {
 
     return (
         <AdminPanelWrapper title={'menu-items'} isAdmin={true}>
-            <AdminMenuModal
+            <MenuModal
                 menuItem={active}
                 visible={modal}
                 setVisible={setModal}
@@ -65,7 +65,15 @@ const Page = () => {
             </Button>
             <ul className={'flex w-full flex-col gap-2'}>
                 <AnimatePresence>
-                    {menuData?.menu &&
+                    {menuData?.menu.length === 0 ? (
+                        <p
+                            className={
+                                'my-8 text-center text-3xl text-gray-400'
+                            }
+                        >
+                            Nothing found!
+                        </p>
+                    ) : (
                         menuData.menu.map((item, index) => (
                             <MenuItem
                                 key={item.id}
@@ -75,7 +83,8 @@ const Page = () => {
                                 openModal={openModal}
                                 handleDeleteItem={handleDelete}
                             />
-                        ))}
+                        ))
+                    )}
                 </AnimatePresence>
             </ul>
         </AdminPanelWrapper>

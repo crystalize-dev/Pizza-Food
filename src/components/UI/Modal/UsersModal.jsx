@@ -1,52 +1,43 @@
 'use client';
-import React, { useContext, useState } from 'react';
-import PhoneInput from 'react-phone-input-2';
-import Input from '../../components/UI/Input';
-import toast from 'react-hot-toast';
-import Button from '../../components/UI/Button';
-import { UserDataContext } from '@/components/AppContext';
-import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
+import React, { useEffect, useState } from 'react';
+import WrapperModal from '@/components/UI/Modal/WrapperModal';
 import ImageUpload from '@/components/UI/ImageUpload';
+import Input from '@/components/UI/Input';
+import PhoneInput from 'react-phone-input-2';
+import Button from '@/components/UI/Button';
+import CustomCheckbox from '@/components/UI/CustomCheckbox';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
-export default function ProfilePage() {
-    const { userData, setUserData, session } = useContext(UserDataContext);
-
-    const [userName, setUserName] = useState(userData.name);
-    const [email, setEmail] = useState(userData.email);
-    const [image, setImage] = useState(
-        userData.image ? userData.image : '/default-avatar.jpg'
-    );
-    const [phoneNumber, setPhoneNumber] = useState(userData.phone);
-    const [address, setAddress] = useState(userData.address);
+const UsersModal = ({ visible, setVisible, user, updateUser }) => {
+    const [email, setEmail] = useState('');
+    const [userName, setUserName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
     const [fetching, setFetching] = useState(false);
+    const [image, setImage] = useState('');
+    const [isAdmin, setIsAdmin] = useState(false);
 
-    const handleProfileInfoUpdate = async (e) => {
+    const submitForm = async (e) => {
         e.preventDefault();
 
         setFetching(true);
-
         const promise = axios
-            .post('/api/profile', {
+            .put('/api/users', {
+                email: email,
                 name: userName,
                 image: image,
                 address: address,
-                phone: phoneNumber
+                phone: phoneNumber,
+                admin: isAdmin
             })
-            .then((res) => {
-                if (res.status === 200) {
-                    setUserData({
-                        ...userData,
-                        name: userName,
-                        image: image,
-                        phone: phoneNumber,
-                        address: address
-                    });
-                } else {
-                    toast.error('Error on DataBase!');
+            .then((response) => {
+                setFetching(false);
+                if (response.status === 200) {
+                    updateUser(response.data);
+                    setVisible(false);
                 }
-            })
-            .catch((err) => toast.error(err));
+            });
 
         await toast.promise(promise, {
             loading: 'Saving...',
@@ -59,7 +50,6 @@ export default function ProfilePage() {
 
     const onChangeAvatar = (link) => {
         setImage(link);
-        setUserData({ ...userData, image: link });
     };
 
     const changeLabelColor = (e) => {
@@ -69,9 +59,27 @@ export default function ProfilePage() {
         }
     };
 
+    useEffect(() => {
+        if (user) {
+            setUserName(user.name);
+            setEmail(user.email);
+            setPhoneNumber(user.phone);
+            setAddress(user.address);
+            setIsAdmin(user.admin);
+
+            if (user.image) setImage(user.image);
+            else setImage('/default-avatar.jpg');
+        }
+    }, [user, visible]);
+
     return (
-        <AdminPanelWrapper title={'profile'} isAdmin={session.data.user.admin}>
-            <div className="mx-auto mt-12 flex w-full max-w-2xl flex-col items-center justify-between gap-16 px-8 md:flex-row md:items-start">
+        <WrapperModal visible={visible} setVisible={setVisible}>
+            <div
+                className={
+                    'scrollable relative flex h-full w-full flex-col gap-4 bg-white px-8 py-8 pt-16 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[500px] md:flex-row md:rounded-lg md:pt-8'
+                }
+                onMouseDown={(e) => e.stopPropagation()}
+            >
                 <ImageUpload
                     image={image}
                     fetching={fetching}
@@ -80,8 +88,8 @@ export default function ProfilePage() {
                 />
 
                 <form
+                    onSubmit={(e) => submitForm(e)}
                     className="mt-3 flex w-full grow flex-col gap-8 md:w-fit"
-                    onSubmit={handleProfileInfoUpdate}
                 >
                     <Input
                         label={'Email'}
@@ -89,14 +97,17 @@ export default function ProfilePage() {
                         disabled={true}
                         value={email}
                     />
+
                     <Input
                         placeholder="John Anderson"
                         disabled={fetching}
                         label={'Your name'}
                         type="text"
                         value={userName}
+                        required={true}
                         onChange={(e) => setUserName(e.target.value)}
                     />
+
                     <PhoneInput
                         disabled={fetching}
                         specialLabel="Phone Number"
@@ -118,6 +129,13 @@ export default function ProfilePage() {
                         onChange={(e) => setAddress(e.target.value)}
                     />
 
+                    <CustomCheckbox
+                        value={isAdmin}
+                        setValue={setIsAdmin}
+                        disabled={fetching}
+                        label={'Administrator'}
+                    />
+
                     <Button
                         disabled={fetching}
                         type="submit"
@@ -127,6 +145,8 @@ export default function ProfilePage() {
                     </Button>
                 </form>
             </div>
-        </AdminPanelWrapper>
+        </WrapperModal>
     );
-}
+};
+
+export default UsersModal;

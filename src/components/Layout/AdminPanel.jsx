@@ -5,13 +5,11 @@ import Icon from '@/components/icon/Icon';
 
 const AdminPanel = ({ active = 'profile' }) => {
     const links = [
-        {
-            path: 'profile',
-            icon: 'profile'
-        },
+        { path: 'profile', icon: 'profile' },
         { path: 'categories', icon: 'tag' },
         { path: 'menu-items', icon: 'cake' },
-        { path: 'users', icon: 'users' }
+        { path: 'users', icon: 'users' },
+        { path: 'orders', icon: 'shop' }
     ];
 
     return (

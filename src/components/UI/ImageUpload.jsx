@@ -41,7 +41,7 @@ const ImageUpload = ({
 
     return (
         <div className="flex w-full flex-col items-center rounded-lg md:w-fit">
-            <div className="relative h-44 w-40 md:h-36 md:w-32">
+            <div className="relative h-44 w-40 md:h-32 md:w-28">
                 {image && (
                     <Image
                         className={

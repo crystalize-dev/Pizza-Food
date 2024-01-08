@@ -13,14 +13,14 @@ export async function POST(req) {
             description: description ? description : null,
             image: image ? image : null,
             price: price,
-            sizes: !!sizes ? { create: [...sizes] } : [],
+            sizes: sizes ? { create: [...sizes] } : [],
             category: {
                 connectOrCreate: {
                     where: { id: category.id },
                     create: category
                 }
             },
-            ingredients: !!ingredients ? { create: [...ingredients] } : []
+            ingredients: ingredients ? { create: [...ingredients] } : []
         }
     });
 
@@ -45,21 +45,30 @@ export async function PUT(req) {
         category
     } = await req.json();
 
-    await prisma.size.deleteMany({
-        where: { MenuId: id }
+    await sizes.forEach((size) => {
+        prisma.size.update({ where: { id: size.id }, data: size });
     });
-    await prisma.ingredient.deleteMany({ where: { MenuId: id } });
-    await prisma.menuItems.delete({ where: { id: id } });
 
-    const updatedMenuitem = await prisma.menuItems.create({
+    await ingredients.forEach((ingredient) => {
+        prisma.ingredient.update({
+            where: { id: ingredient.id },
+            data: ingredient
+        });
+    });
+
+    const updatedMenuitem = await prisma.menuItems.update({
+        where: { id },
         data: {
             name: name,
             description: description ? description : null,
             image: image ? image : null,
             price: price,
-            sizes: { create: [...sizes] },
-            category: { connectOrCreate: category },
-            ingredients: { create: [...ingredients] }
+            category: {
+                connectOrCreate: {
+                    where: { id: category.id },
+                    create: category
+                }
+            }
         }
     });
 
