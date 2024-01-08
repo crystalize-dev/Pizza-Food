@@ -35,7 +35,18 @@ export async function PUT(req) {
 export async function DELETE(req) {
     const { id } = await req.json();
 
+    const isMenuItemsExists = !!(await prisma.menuItems.findFirst({
+        where: { categoryId: id }
+    }));
+
+    if (isMenuItemsExists) {
+        return NextResponse.json(
+            { error: 'This category have some menu items!' },
+            { status: 400 }
+        );
+    }
+
     const res = await prisma.categories.delete({ where: { id: id } });
 
-    return NextResponse.json(res);
+    return NextResponse.json({ res });
 }

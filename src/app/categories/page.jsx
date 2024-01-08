@@ -4,7 +4,7 @@ import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
 import CategoryItem from '@/components/menu/CategoryItem';
 import { AnimatePresence } from 'framer-motion';
-import { useFetchCategories } from '@/hooks/useFetchCategories';
+import { useCategories } from '@/hooks/useCategories';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 
 const Page = () => {
@@ -12,7 +12,7 @@ const Page = () => {
     const [categoryName, setCategoryName] = useState('');
 
     const { handleUpdate, handleDelete, handleNewCategory, loading, menuData } =
-        useFetchCategories({ categoryName, setCategoryName });
+        useCategories({ categoryName, setCategoryName });
 
     return (
         <AdminPanelWrapper title={'categories'} isAdmin={true}>

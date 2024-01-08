@@ -6,10 +6,11 @@ import toast from 'react-hot-toast';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
 import ToggleBar from '@/components/UI/ToggleBar';
-import { v4 as uuid } from 'uuid';
-import SizeIngredientItem from '@/components/menu/SizeIngredientItem';
+import ExtrasItem from '@/components/menu/ExtrasItem';
 import axios from 'axios';
 import { MenuContext } from '@/components/AppContext';
+import { useExtra } from '@/hooks/useExtra';
+import MySelect from '@/components/UI/MySelect';
 
 const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
     const [action, setAction] = useState('');
@@ -19,11 +20,23 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('');
     const [price, setPrice] = useState('');
+    const [category, setCategory] = useState('');
 
-    const [sizes, setSizes] = useState([]);
-    const [ingredients, setIngredients] = useState([]);
+    const {
+        extra: ingredients,
+        addExtra: addIngredient,
+        changeExtra: changeIngredient,
+        deleteExtra: deleteIngredient
+    } = useExtra(menuItem?.ingredients);
 
-    const { menuActions } = useContext(MenuContext);
+    const {
+        extra: sizes,
+        addExtra: addSize,
+        changeExtra: changeSize,
+        deleteExtra: deleteSize
+    } = useExtra(menuItem?.sizes);
+
+    const { menuData, menuActions } = useContext(MenuContext);
 
     const onChangeMenuPhoto = (link) => {
         setImage(link);
@@ -43,12 +56,22 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
             return;
         }
 
+        if (!category) {
+            toast.error('Provide a category!');
+            return;
+        }
+
         if (action === 'create') {
+            const categoryFromMenu = menuData.categories.find(
+                (item) => item.name === category.value
+            );
+
             const newItem = {
                 name: name,
                 description: description,
                 price: parseInt(price),
                 image: image,
+                category: categoryFromMenu,
                 sizes: [
                     ...sizes.map((size) => {
                         return { name: size.name, price: size.price };
@@ -76,12 +99,17 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                 success: 'Success!',
                 error: (err) => `${err}`
             });
-        } else {
+
+            return;
+        }
+
+        if (action === 'update') {
             const updatedItem = {
                 id: menuItem.id,
                 name: name,
                 description: description,
                 price: parseInt(price),
+                category: category,
                 image: image,
                 sizes: [
                     ...sizes.map((size) => {
@@ -112,47 +140,19 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
         }
     };
 
-    const addSize = () => {
-        setSizes([...sizes, { id: uuid(), name: '', price: 0 }]);
-    };
-
-    const changeSizes = ({ id, name, price }) => {
-        setSizes([
-            ...sizes.map((item) => {
-                if (item.id === id) return { id: id, name: name, price: price };
-                else return item;
-            })
-        ]);
-    };
-
-    const deleteSize = (id) => {
-        setSizes([...sizes.filter((item) => item.id !== id)]);
-    };
-
-    const addIngredient = () => {
-        setIngredients([...ingredients, { id: uuid(), name: '', price: 0 }]);
-    };
-
-    const changeIngredients = ({ id, name, price }) => {
-        setIngredients([
-            ...ingredients.map((item) => {
-                if (item.id === id) return { id: id, name: name, price: price };
-                else return item;
-            })
-        ]);
-    };
-
-    const deleteIngredient = (id) => {
-        setIngredients([...ingredients.filter((item) => item.id !== id)]);
-    };
-
     useEffect(() => {
         setAction(menuItem ? 'update' : 'create');
         setName(menuItem ? menuItem.name : '');
         setDescription(menuItem ? menuItem.description : '');
         setPrice(menuItem ? menuItem.price : '');
-        setSizes(menuItem ? menuItem.sizes : []);
-        setIngredients(menuItem ? menuItem.ingredients : []);
+        setCategory(
+            menuItem
+                ? {
+                      value: menuItem.category.name,
+                      label: menuItem.category.name
+                  }
+                : ''
+        );
 
         setImage('/default-menu.png');
         if (menuItem) {
@@ -162,7 +162,7 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                 }
             }
         }
-    }, [menuItem]);
+    }, [menuItem, visible]);
 
     return (
         <AnimatePresence>
@@ -178,7 +178,7 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                 >
                     <form
                         className={
-                            'scrollable relative flex h-full w-full flex-col gap-4 bg-white px-8 py-4 pt-16 md:h-fit md:max-h-[90%] md:w-1/2 md:rounded-lg md:pt-4'
+                            'scrollable relative flex h-full w-full flex-col gap-4 bg-white px-8 py-4 pt-16 md:h-fit md:max-h-[90%] md:w-1/3 md:rounded-lg md:pt-4'
                         }
                         onSubmit={(e) => submitForm(e)}
                         onMouseDown={(e) => e.stopPropagation()}
@@ -190,12 +190,19 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                                 'absolute right-2 top-2 transition-all hover:scale-125 md:-right-8 md:-top-8 md:text-white'
                             }
                         />
-                        <div className={'mt-4 flex h-fit w-full gap-8'}>
+                        <div
+                            className={
+                                'mt-4 flex h-fit w-full flex-col gap-8 md:flex-row'
+                            }
+                        >
                             <ImageUpload
                                 image={image}
                                 fetching={loading}
                                 setFetching={setLoading}
                                 onChange={onChangeMenuPhoto}
+                                imageClassname={
+                                    'border-none object-contain object-center'
+                                }
                             />
                             <div
                                 className={
@@ -222,6 +229,21 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                                     placeholder={'10$'}
                                     onChange={(e) => setPrice(e.target.value)}
                                 />
+
+                                <MySelect
+                                    label={'Category'}
+                                    current={category}
+                                    setCurrent={setCategory}
+                                    placeholder={'Drinks'}
+                                    options={[
+                                        ...menuData.categories.map((item) => {
+                                            return {
+                                                value: item.name,
+                                                label: item.name
+                                            };
+                                        })
+                                    ]}
+                                />
                             </div>
                         </div>
 
@@ -229,10 +251,10 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                             <ToggleBar title={`Sizes (${sizes.length})`}>
                                 {sizes.length !== 0 ? (
                                     sizes.map((size) => (
-                                        <SizeIngredientItem
+                                        <ExtrasItem
                                             key={size.id}
                                             item={size}
-                                            changeCallback={changeSizes}
+                                            changeCallback={changeSize}
                                             handleDelete={deleteSize}
                                         />
                                     ))
@@ -264,11 +286,11 @@ const AdminMenuModal = ({ visible, setVisible, menuItem }) => {
                                 <AnimatePresence>
                                     {ingredients.length !== 0 ? (
                                         ingredients.map((ingredient) => (
-                                            <SizeIngredientItem
+                                            <ExtrasItem
                                                 key={ingredient.id}
                                                 item={ingredient}
                                                 changeCallback={
-                                                    changeIngredients
+                                                    changeIngredient
                                                 }
                                                 handleDelete={deleteIngredient}
                                             />

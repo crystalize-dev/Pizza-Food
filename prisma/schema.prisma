@@ -51,6 +51,8 @@ model User {
 model Categories {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   name            String
+
+  items           MenuItems[]
 }
 
 model MenuItems {
@@ -61,6 +63,9 @@ model MenuItems {
   image           String?
   sizes           Size[]
   ingredients     Ingredient[]
+
+  categoryId      String    @db.ObjectId
+  category        Categories @relation(fields: [categoryId], references: [id])
 }
 
 model Size {

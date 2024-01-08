@@ -4,7 +4,7 @@ import Button from '@/components/UI/Button';
 import Icon from '@/components/icon/Icon';
 import { motion } from 'framer-motion';
 
-const SizeIngredientItem = ({ item, changeCallback, handleDelete }) => {
+const ExtrasItem = ({ item, changeCallback, handleDelete }) => {
     const [name, setName] = useState(item.name);
     const [price, setPrice] = useState(item.price);
 
@@ -55,4 +55,4 @@ const SizeIngredientItem = ({ item, changeCallback, handleDelete }) => {
     );
 };
 
-export default SizeIngredientItem;
+export default ExtrasItem;

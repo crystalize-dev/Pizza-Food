@@ -102,6 +102,10 @@ const CategoryItem = ({
                         onClick={() => setActive(category.id)}
                     >
                         Edit
+                        <Icon
+                            icon={'pen'}
+                            className={'h-5 w-5 !p-0 hover:!text-white'}
+                        />
                     </Button>
                     <TimerButton
                         type={'button'}
@@ -115,6 +119,10 @@ const CategoryItem = ({
                         loadingClass={'!bg-red-500'}
                     >
                         Delete
+                        <Icon
+                            icon={'trash'}
+                            className={'h-5 w-5 !p-0 hover:!text-white'}
+                        />
                     </TimerButton>
                 </>
             )}

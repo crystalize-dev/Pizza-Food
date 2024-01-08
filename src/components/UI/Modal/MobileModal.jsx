@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Icon from '../icon/Icon';
+import Icon from '../../icon/Icon';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -22,7 +22,7 @@ export default function MobileModal({ visible, setVisible }) {
                 }
             />
             <div className="flex flex-col gap-8 text-center text-2xl">
-                <Link href="/" onClick={() => setVisible(false)}>
+                <Link href="/public" onClick={() => setVisible(false)}>
                     Home
                 </Link>
                 <Link href="/menu" onClick={() => setVisible(false)}>

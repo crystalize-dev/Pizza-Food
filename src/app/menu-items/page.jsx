@@ -4,10 +4,11 @@ import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 import Button from '@/components/UI/Button';
 import { AnimatePresence } from 'framer-motion';
 import MenuItem from '@/components/menu/MenuItem';
-import AdminMenuModal from '@/components/UI/AdminMenuModal';
+import AdminMenuModal from '@/components/UI/Modal/AdminMenuModal';
 import { MenuContext } from '@/components/AppContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import Icon from '@/components/icon/Icon';
 
 const Page = () => {
     const [active, setActive] = useState(null);
@@ -55,24 +56,26 @@ const Page = () => {
             <Button
                 type={'button'}
                 variant={'submit'}
-                className={'my-8 !w-fit !rounded-lg'}
+                className={'mb-4 mt-16 !w-fit !rounded-lg md:my-8'}
                 disabled={loading}
                 onClick={() => openModal(null)}
             >
+                <Icon icon={'plus'} className={'h-6 w-6 !p-0'} />
                 Create new
             </Button>
             <ul className={'flex w-full flex-col gap-2'}>
                 <AnimatePresence>
-                    {menuData.menu.map((item, index) => (
-                        <MenuItem
-                            key={item.id}
-                            menuItem={item}
-                            loading={loading}
-                            index={index}
-                            openModal={openModal}
-                            handleDeleteItem={handleDelete}
-                        />
-                    ))}
+                    {menuData?.menu &&
+                        menuData.menu.map((item, index) => (
+                            <MenuItem
+                                key={item.id}
+                                menuItem={item}
+                                loading={loading}
+                                index={index}
+                                openModal={openModal}
+                                handleDeleteItem={handleDelete}
+                            />
+                        ))}
                 </AnimatePresence>
             </ul>
         </AdminPanelWrapper>

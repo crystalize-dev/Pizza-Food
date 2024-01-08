@@ -8,36 +8,6 @@ export const useMenu = () => {
         menu: []
     });
 
-    React.useEffect(() => {
-        const newData = {};
-        axios
-            .get('/api/categories')
-            .then((res) => {
-                if (res.status === 200) {
-                    newData['categories'] = res.data;
-                } else {
-                    toast.error('Error on DataBase!');
-                }
-            })
-            .then(() => {
-                axios
-                    .get('/api/menu')
-                    .then((res) => {
-                        if (res.status === 200) {
-                            newData['menu'] = res.data;
-                        } else {
-                            toast.error('Error on DataBase!');
-                        }
-                    })
-                    .then(() => {
-                        setMenuData(newData);
-                        console.log(newData);
-                    })
-                    .catch((err) => toast.error(err));
-            })
-            .catch((err) => toast.error(err));
-    }, []);
-
     const addCategory = (category) => {
         setMenuData({
             ...menuData,
@@ -91,6 +61,35 @@ export const useMenu = () => {
             menu: [...menuData.menu.filter((item) => item.id !== id)]
         });
     };
+
+    React.useEffect(() => {
+        const newData = {};
+        axios
+            .get('/api/categories')
+            .then((res) => {
+                if (res.status === 200) {
+                    newData['categories'] = res.data;
+                } else {
+                    toast.error('Error on DataBase!');
+                }
+            })
+            .then(() => {
+                axios
+                    .get('/api/menu')
+                    .then((res) => {
+                        if (res.status === 200) {
+                            newData['menu'] = res.data;
+                        } else {
+                            toast.error('Error on DataBase!');
+                        }
+                    })
+                    .then(() => {
+                        setMenuData(newData);
+                    })
+                    .catch((err) => toast.error(err));
+            })
+            .catch((err) => toast.error(err));
+    }, []);
 
     return {
         menuData,

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useContext, useState } from 'react';
 import Button from '../UI/Button';
 import Icon from '../icon/Icon';
-import MobileModal from '../UI/MobileModal';
+import MobileModal from '../UI/Modal/MobileModal';
 import { UserDataContext } from '@/components/AppContext';
 
 export default function Header() {

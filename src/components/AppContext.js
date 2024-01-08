@@ -15,7 +15,6 @@ export function AppProvider({ children }) {
             <MenuProvider>
                 <DataProvider>
                     <Toaster />
-
                     {children}
                 </DataProvider>
             </MenuProvider>
@@ -45,7 +44,9 @@ function DataProvider({ children }) {
             {(session.status === 'authenticated' && !userData) ||
             session.status === 'loading' ? (
                 <div
-                    className={'flex h-full w-full items-center justify-center'}
+                    className={
+                        'absolute left-0 top-0 flex h-screen w-screen items-center justify-center'
+                    }
                 >
                     <InfinitySpin color={'var(--main)'} />
                 </div>

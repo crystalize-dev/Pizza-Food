@@ -3,7 +3,7 @@ import { MenuContext } from '@/components/AppContext';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
-export const useFetchCategories = ({ categoryName, setCategoryName }) => {
+export const useCategories = ({ categoryName, setCategoryName }) => {
     const [loading, setLoading] = useState(false);
 
     const { menuData, categoriesActions } = useContext(MenuContext);
@@ -83,19 +83,19 @@ export const useFetchCategories = ({ categoryName, setCategoryName }) => {
             .then((res) => {
                 if (res.status === 200) {
                     categoriesActions.deleteCategory(categoryId);
-                } else {
-                    toast.error('Error on DataBase!');
                 }
+                setLoading(false);
             })
-            .catch((err) => toast.error(err));
+            .catch((err) => {
+                setLoading(false);
+                return Promise.reject(err.response.data.error);
+            });
 
         await toast.promise(promise, {
             loading: 'Deleting...',
             success: 'Category deleted!',
-            error: 'Some error occurred!'
+            error: (err) => `${err}`
         });
-
-        setLoading(false);
     };
 
     return {

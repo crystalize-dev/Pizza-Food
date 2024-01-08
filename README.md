@@ -2,11 +2,14 @@
 
 # Todo:
 
-- Great refactor!!!
 - Users page
 
 # Not in rush
 
+- Category items preview
+- Sort by category in menuItems
+- Fetch logic to hooks
+- Icon refactor (bigger variant with padding + color hover)
 - Errors on fetch handling
 - ID on images posting
 - Pizza loader

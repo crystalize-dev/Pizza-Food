@@ -15,7 +15,7 @@ export default async function middleware(req: NextRequest) {
 
     const protectedPaths = ['/profile', '/categories', '/menu-items', '/users'];
 
-    const isProtected = protectedPaths.find(
+    const isProtected = !!protectedPaths.find(
         (protectedPath) => protectedPath === path
     );
 

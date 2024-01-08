@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 const prisma = new PrismaClient();
 
 export async function POST(req) {
-    const { name, description, image, price, sizes, ingredients } =
+    const { name, description, image, price, sizes, ingredients, category } =
         await req.json();
 
     const menuItem = await prisma.menuItems.create({
@@ -13,8 +13,14 @@ export async function POST(req) {
             description: description ? description : null,
             image: image ? image : null,
             price: price,
-            sizes: { create: [...sizes] },
-            ingredients: { create: [...ingredients] }
+            sizes: !!sizes ? { create: [...sizes] } : [],
+            category: {
+                connectOrCreate: {
+                    where: { id: category.id },
+                    create: category
+                }
+            },
+            ingredients: !!ingredients ? { create: [...ingredients] } : []
         }
     });
 
@@ -23,13 +29,21 @@ export async function POST(req) {
 export async function GET() {
     return NextResponse.json(
         await prisma.menuItems.findMany({
-            include: { ingredients: true, sizes: true }
+            include: { ingredients: true, sizes: true, category: true }
         })
     );
 }
 export async function PUT(req) {
-    const { id, name, description, image, price, sizes, ingredients } =
-        await req.json();
+    const {
+        id,
+        name,
+        description,
+        image,
+        price,
+        sizes,
+        ingredients,
+        category
+    } = await req.json();
 
     await prisma.size.deleteMany({
         where: { MenuId: id }
@@ -44,6 +58,7 @@ export async function PUT(req) {
             image: image ? image : null,
             price: price,
             sizes: { create: [...sizes] },
+            category: { connectOrCreate: category },
             ingredients: { create: [...ingredients] }
         }
     });
