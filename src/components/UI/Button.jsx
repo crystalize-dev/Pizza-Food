@@ -5,7 +5,7 @@ export default function Button({ variant, children, ...props }) {
 
     const constructStyles = () => {
         let res =
-            'flex w-full text-center  gap-2 items-center outline-none whitespace-nowrap justify-center text-gray-700 font-semibold transition-all border-2 rounded-full border-solid border-transparent px-4 py-2';
+            'flex w-full text-center cursor-pointer gap-2 items-center outline-none whitespace-nowrap justify-center text-gray-700 font-semibold transition-all border-2 rounded-full border-solid border-transparent px-4 py-2';
 
         if (type === 'submit' || variant === 'submit') {
             res +=

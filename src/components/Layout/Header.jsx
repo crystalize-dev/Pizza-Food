@@ -5,13 +5,14 @@ import Link from 'next/link';
 import React, { useContext, useState } from 'react';
 import Button from '../UI/Button';
 import Icon from '../icon/Icon';
-import MobileModal from '../UI/Modal/MobileModal';
-import { UserDataContext } from '@/components/AppContext';
+import MobileModal from '@/components/Modal/MobileModal';
+import { CartContext, UserDataContext } from '@/components/AppContext';
 
 export default function Header() {
     const [sidebar, setSidebar] = useState(false);
 
     const { userData, session } = useContext(UserDataContext);
+    const { userCart } = useContext(CartContext);
 
     return (
         <header className="flex max-h-[6rem] min-h-[6rem] items-center justify-between">
@@ -67,6 +68,17 @@ export default function Header() {
                         </Link>
                     )}
 
+                    <Link
+                        href={'/cart'}
+                        className={'shoppingCart'}
+                        data-count={userCart.length}
+                    >
+                        <Icon
+                            icon={'shoppingCart'}
+                            className={'!pointer-events-none'}
+                        />
+                    </Link>
+
                     <Icon onClick={() => setSidebar(true)} icon={'menu'} />
                 </div>
             </nav>
@@ -100,6 +112,17 @@ export default function Header() {
                         <Button variant={'submit'} onClick={() => signOut()}>
                             Logout
                         </Button>
+
+                        <Link
+                            href={'/cart'}
+                            className={'shoppingCart'}
+                            data-count={userCart.length}
+                        >
+                            <Icon
+                                icon={'shoppingCart'}
+                                className={'!pointer-events-none'}
+                            />
+                        </Link>
                     </>
                 )}
             </nav>

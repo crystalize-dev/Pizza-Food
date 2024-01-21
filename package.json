@@ -16,6 +16,8 @@
     "bcrypt": "^5.1.1",
     "framer": "^2.4.1",
     "framer-motion": "^10.16.16",
+    "js-cookie": "^3.0.5",
+    "lodash": "^4.17.21",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3",
     "motion": "^10.16.4",

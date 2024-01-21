@@ -1,12 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 import Button from '@/components/UI/Button';
+import Link from 'next/link';
 
 export default function Hero() {
     return (
-        <section className="hero mt-4">
-            <div className="py-12">
-                <h1 className="text-6xl font-bold ">
+        <section className="hero flex justify-between">
+            <div className="py-4 transition-all md:py-12 md:pl-16 xl:pl-0">
+                <h1 className="mx-auto max-w-md text-center text-5xl font-bold md:text-start">
                     Everything
                     <br />
                     is better
@@ -14,29 +15,41 @@ export default function Hero() {
                     <span className="text-primary">Pizza</span>
                 </h1>
 
-                <p className="my-6 text-gray-500">
+                <p className="text-md mx-auto my-6 max-w-md text-center text-gray-500 md:text-start">
                     Pizza is a missing pieace that makes every day complete, a
                     simple yet delicious joy in life
                 </p>
 
-                <div className="flex items-center gap-4">
-                    <Button type={'button'} variant={'submit'}>
-                        Order now
-                    </Button>
+                <div className="flex w-full items-center justify-center gap-4">
+                    <Link href={'/menu'}>
+                        <Button
+                            type={'button'}
+                            variant={'submit'}
+                            className={'!w-fit !px-8'}
+                        >
+                            Order now
+                        </Button>
+                    </Link>
 
-                    <Button className={'hover:!text-primary'}>
-                        Learn more
-                    </Button>
+                    <Link href={'/about'}>
+                        <Button
+                            type={'button'}
+                            className={'!w-fit !px-8 hover:!text-primary'}
+                        >
+                            Learn more
+                        </Button>
+                    </Link>
                 </div>
             </div>
 
-            <div className="relative">
+            <div className="relative hidden w-full md:block">
                 <Image
                     src={'/pizza.png'}
                     alt={'pizza'}
-                    className="w-full"
-                    width={250}
-                    height={250}
+                    priority={true}
+                    className={'object-contain'}
+                    fill={true}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
             </div>
         </section>

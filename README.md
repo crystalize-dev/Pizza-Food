@@ -2,17 +2,19 @@
 
 # Todo:
 
-- Users page
+- Main page
+- Cart page
+- Product preview
 
 # Not in rush
 
-- Category items preview
+- Categories page (menuItems list preview e.g. some of them)
 - Sort by category in menuItems
-- Fetch logic to hooks
+- Transport ALL fetch logic to hooks
 - Icon refactor (bigger variant with padding + color hover)
-- Errors on fetch handling
+- Icons on Categories
+- !!!Errors on fetch handling!!!
 - ID on images posting
 - Pizza loader
-- Icons on Categories
   
-- Invalid or unexpected token ?
+- Invalid or unexpected token (Can it be on prod?)

@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import WrapperModal from '@/components/UI/Modal/WrapperModal';
+import WrapperModal from '@/components/Modal/WrapperModal';
 import ImageUpload from '@/components/UI/ImageUpload';
 import Input from '@/components/UI/Input';
 import PhoneInput from 'react-phone-input-2';

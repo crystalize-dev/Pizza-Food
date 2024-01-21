@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Icon from '../../icon/Icon';
+import Icon from '../icon/Icon';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 

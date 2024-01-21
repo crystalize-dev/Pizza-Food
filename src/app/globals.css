@@ -8,11 +8,12 @@ section.hero {
     @apply font-semibold;
     @apply gap-8;
 
-    grid-template-columns: 0.4fr 0.6fr;
+    grid-template-columns: 0.1fr 0.9fr;
 }
 
 :root {
     --main: #FF5B00;
+    scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {
@@ -42,9 +43,43 @@ input:focus + p,
     border-radius: 10px;
     background-color: var(--main);
 }
+.gray-scroll::-webkit-scrollbar-thumb {
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: #c2c2c2 !important;
+}
+.shoppingCart {
+    @apply relative
+}
+.shoppingCart::after {
+    position: absolute;
+    content: attr(data-count);
+    top: 0;
+    left: 20px;
 
-@media (max-width: 980px) {
+    background-color: var(--main);
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.8rem;
+
+    color: white;
+
+    width: 18px;
+    height: 18px;
+
+
+    z-index: 40;
+}
+
+@media (max-width: 1010px) {
     ::-webkit-scrollbar {
         width: 0;
+    }
+    section.hero {
+        grid-template-columns: 1fr;
     }
 }

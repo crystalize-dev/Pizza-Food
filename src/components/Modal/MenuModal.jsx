@@ -9,7 +9,7 @@ import axios from 'axios';
 import { MenuContext } from '@/components/AppContext';
 import { useExtra } from '@/hooks/useExtra';
 import MySelect from '@/components/UI/MySelect';
-import WrapperModal from '@/components/UI/Modal/WrapperModal';
+import WrapperModal from '@/components/Modal/WrapperModal';
 import { v4 as uuid } from 'uuid';
 
 const MenuModal = ({ visible, setVisible, menuItem }) => {

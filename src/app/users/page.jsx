@@ -6,7 +6,7 @@ import UserItem from '@/components/SingleItems/UserItem';
 import toast from 'react-hot-toast';
 import { InfinitySpin } from 'react-loader-spinner';
 import { UserDataContext } from '@/components/AppContext';
-import UsersModal from '@/components/UI/Modal/UsersModal';
+import UsersModal from '@/components/Modal/UsersModal';
 
 const Page = () => {
     const [users, setUsers] = useState([]);

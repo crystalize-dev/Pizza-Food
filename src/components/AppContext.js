@@ -1,22 +1,29 @@
 'use client';
 import { SessionProvider, useSession } from 'next-auth/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
 import toast, { Toaster } from 'react-hot-toast';
 import { useMenu } from '@/hooks/useMenu';
 import axios from 'axios';
+import { useCart } from '@/hooks/useCart';
 
 export const UserDataContext = React.createContext(null);
 export const MenuContext = React.createContext(null);
+export const CartContext = React.createContext(null);
+export const MenuItemModalContext = React.createContext(null);
 
 export function AppProvider({ children }) {
     return (
         <SessionProvider>
             <MenuProvider>
-                <DataProvider>
-                    <Toaster />
-                    {children}
-                </DataProvider>
+                <MenuItemModalProvider>
+                    <DataProvider>
+                        <CartProvider>
+                            <Toaster />
+                            {children}
+                        </CartProvider>
+                    </DataProvider>
+                </MenuItemModalProvider>
             </MenuProvider>
         </SessionProvider>
     );
@@ -70,5 +77,38 @@ function MenuProvider({ children }) {
         >
             {children}
         </MenuContext.Provider>
+    );
+}
+
+function CartProvider({ children }) {
+    const session = useSession();
+    const { userCart, addToCart, deleteFromCart, decreaseAmount } = useCart(
+        session.data?.user
+    );
+
+    return (
+        <CartContext.Provider
+            value={{ userCart, addToCart, decreaseAmount, deleteFromCart }}
+        >
+            {children}
+        </CartContext.Provider>
+    );
+}
+
+function MenuItemModalProvider({ children }) {
+    const [menuItemModal, setMenuItemModal] = useState(false);
+    const openMenuItemModal = (menuItem) => {
+        setMenuItemModal(menuItem);
+    };
+    const closeMenuItemModal = () => {
+        setMenuItemModal(false);
+    };
+
+    return (
+        <MenuItemModalContext.Provider
+            value={{ openMenuItemModal, closeMenuItemModal, menuItemModal }}
+        >
+            {children}
+        </MenuItemModalContext.Provider>
     );
 }

@@ -4,7 +4,7 @@ import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 import Button from '@/components/UI/Button';
 import { AnimatePresence } from 'framer-motion';
 import MenuItem from '@/components/SingleItems/MenuItem';
-import MenuModal from '@/components/UI/Modal/MenuModal';
+import MenuModal from '@/components/Modal/MenuModal';
 import { MenuContext } from '@/components/AppContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
