@@ -7,24 +7,51 @@ export async function POST(req) {
     const { name, description, image, price, sizes, ingredients, category } =
         await req.json();
 
-    const menuItem = await prisma.menuItems.create({
+    // Создаем или обновляем массив Size
+    const sizePromises = sizes.map(async (size) => {
+        return prisma.size.upsert({
+            where: { name: size.name },
+            update: {},
+            create: { name: size.name, price: size.price }
+        });
+    });
+
+    const sizesPromises = await Promise.all(sizePromises);
+
+    // Создаем или обновляем массив Ingredient
+    const ingredientPromises = ingredients.map(async (ingredient) => {
+        return prisma.ingredient.upsert({
+            where: { name: ingredient.name },
+            update: {},
+            create: { name: ingredient.name, price: ingredient.price }
+        });
+    });
+
+    const ingredientsPromises = await Promise.all(ingredientPromises);
+
+    // Создаем новый MenuItem, связывая существующие или новые Size и Ingredient
+    const createdMenuItem = await prisma.menuItems.create({
         data: {
             name: name,
-            description: description ? description : null,
-            image: image ? image : null,
+            description: description,
             price: price,
-            sizes: sizes ? { create: [...sizes] } : [],
+            image: image,
+            sizes: { connect: sizesPromises.map((size) => ({ id: size.id })) },
+            ingredients: {
+                connect: ingredientsPromises.map((ingredient) => ({
+                    id: ingredient.id
+                }))
+            },
             category: {
                 connectOrCreate: {
                     where: { id: category.id },
                     create: category
                 }
-            },
-            ingredients: ingredients ? { create: [...ingredients] } : []
+            }
         }
     });
 
-    return NextResponse.json(menuItem, { status: 200 });
+    return NextResponse.json(createdMenuItem, { status: 200 });
 }
 export async function GET() {
     return NextResponse.json(
@@ -75,15 +102,79 @@ export async function PUT(req) {
     return NextResponse.json(updatedMenuitem);
 }
 export async function DELETE(req) {
-    const { id } = await req.json();
-
-    await prisma.size.deleteMany({
-        where: { MenuId: id }
+    const { id: menuItemId } = await req.json();
+    // Находим связанные записи в Sizes.MenuItems
+    const sizesWithMenuItem = await prisma.size.findMany({
+        where: {
+            menuItems: {
+                some: {
+                    id: menuItemId
+                }
+            }
+        },
+        include: {
+            menuItems: true
+        }
     });
 
-    await prisma.ingredient.deleteMany({ where: { MenuId: id } });
+    // Удаляем связи с Sizes.MenuItems
+    await Promise.all(
+        sizesWithMenuItem.map(async (size) => {
+            const updatedMenuItems = size.menuItems.filter(
+                (item) => item.id !== menuItemId
+            );
+            await prisma.size.update({
+                where: {
+                    id: size.id
+                },
+                data: {
+                    menuItems: {
+                        set: updatedMenuItems
+                    }
+                }
+            });
+        })
+    );
 
-    const res = await prisma.menuItems.delete({ where: { id: id } });
+    // Находим связанные записи в Ingredients.MenuItems
+    const ingredientsWithMenuItem = await prisma.ingredient.findMany({
+        where: {
+            menuItems: {
+                some: {
+                    id: menuItemId
+                }
+            }
+        },
+        include: {
+            menuItems: true
+        }
+    });
 
-    return NextResponse.json(res);
+    // Удаляем связи с Ingredients.MenuItems
+    await Promise.all(
+        ingredientsWithMenuItem.map(async (ingredient) => {
+            const updatedMenuItems = ingredient.menuItems.filter(
+                (item) => item.id !== menuItemId
+            );
+            await prisma.ingredient.update({
+                where: {
+                    id: ingredient.id
+                },
+                data: {
+                    menuItems: {
+                        set: updatedMenuItems
+                    }
+                }
+            });
+        })
+    );
+
+    // Удаляем сам MenuItem
+    const res = await prisma.menuItems.delete({
+        where: {
+            id: menuItemId
+        }
+    });
+
+    return NextResponse.json(res, { status: 200 });
 }

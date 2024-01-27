@@ -16,6 +16,8 @@ const StyledSelect = ({ options, active, setActive, id, order }) => {
         return sortedArray;
     };
 
+    console.log(options);
+
     return (
         <div
             className={
@@ -27,10 +29,10 @@ const StyledSelect = ({ options, active, setActive, id, order }) => {
                     return (
                         <motion.div
                             className={`relative z-30 flex grow cursor-pointer select-none items-center justify-center rounded-3xl p-2`}
-                            key={option.id}
+                            key={option.name}
                             onClick={() => setActive(option)}
                         >
-                            {active?.id === option?.id && (
+                            {active?.name === option?.name && (
                                 <motion.div
                                     layoutId={id}
                                     className={

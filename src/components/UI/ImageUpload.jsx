@@ -13,6 +13,10 @@ const ImageUpload = ({
     const handleImageChange = async (e) => {
         const files = e.target.files;
 
+        if (!files) {
+            return;
+        }
+
         const data = new FormData();
 
         data.set('image', files[0]);

@@ -4,13 +4,12 @@ import toast from 'react-hot-toast';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
 import ToggleBar from '@/components/UI/ToggleBar';
-import ExtrasItem from '@/components/SingleItems/ExtrasItem';
+import ExtrasItem from '@/components/cards/ExtrasItem';
 import axios from 'axios';
 import { MenuContext } from '@/components/AppContext';
 import { useExtra } from '@/hooks/useExtra';
 import MySelect from '@/components/UI/MySelect';
 import WrapperModal from '@/components/Modal/WrapperModal';
-import { v4 as uuid } from 'uuid';
 
 const MenuModal = ({ visible, setVisible, menuItem }) => {
     const [action, setAction] = useState('');
@@ -27,54 +26,14 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
         addExtra: addIngredient,
         changeExtra: changeIngredient,
         deleteExtra: deleteIngredient
-    } = useExtra(
-        menuItem?.ingredients
-            ? menuItem?.ingredients
-            : [
-                  {
-                      id: uuid(),
-                      name: 'Cheese',
-                      price: 5
-                  },
-                  {
-                      id: uuid(),
-                      name: 'Salami',
-                      price: 5
-                  },
-                  {
-                      id: uuid(),
-                      name: 'Mushrooms',
-                      price: 2
-                  }
-              ]
-    );
+    } = useExtra(category, 'ingredients');
 
     const {
         extra: sizes,
         addExtra: addSize,
         changeExtra: changeSize,
         deleteExtra: deleteSize
-    } = useExtra(
-        menuItem?.sizes
-            ? menuItem?.sizes
-            : [
-                  {
-                      id: uuid(),
-                      name: 'Small',
-                      price: 0
-                  },
-                  {
-                      id: uuid(),
-                      name: 'Medium',
-                      price: 3
-                  },
-                  {
-                      id: uuid(),
-                      name: 'Large',
-                      price: 5
-                  }
-              ]
-    );
+    } = useExtra(category, 'sizes');
 
     const { menuData, menuActions } = useContext(MenuContext);
 
@@ -136,6 +95,10 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                 error: (err) => `${err}`
             });
 
+            const root = document.getElementById('root');
+            root.style.overflow = 'auto';
+            root.style.marginRight = '0';
+
             return;
         }
 
@@ -173,6 +136,10 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                 success: 'Success!',
                 error: (err) => `${err}`
             });
+
+            const root = document.getElementById('root');
+            root.style.overflow = 'auto';
+            root.style.marginRight = '0';
         }
     };
 
@@ -200,11 +167,18 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
         }
     }, [menuItem, visible]);
 
+    const closeModal = (modal) => {
+        const root = document.getElementById('root');
+        root.style.overflow = 'auto';
+        root.style.marginRight = '0';
+        setVisible(modal);
+    };
+
     return (
-        <WrapperModal visible={visible} setVisible={setVisible}>
+        <WrapperModal visible={visible} setVisible={closeModal}>
             <form
                 className={
-                    'scrollable relative flex h-full w-full flex-col gap-4 bg-white px-8 py-24 pt-16 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[500px] md:rounded-lg md:pt-8'
+                    'scrollable relative flex h-full w-full flex-col justify-between gap-4 bg-white px-8 py-16 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[500px] md:rounded-lg md:py-8'
                 }
                 onSubmit={(e) => submitForm(e)}
                 onMouseDown={(e) => e.stopPropagation()}
@@ -328,7 +302,11 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                     </div>
                 )}
 
-                <Button type={'submit'} className={'!rounded-lg'}>
+                <Button
+                    type={'submit'}
+                    className={'!mt-auto !rounded-lg'}
+                    disabled={loading}
+                >
                     Submit
                 </Button>
             </form>

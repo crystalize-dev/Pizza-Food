@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 import axios from 'axios';
-import UserItem from '@/components/SingleItems/UserItem';
+import UserItem from '@/components/cards/UserItem';
 import toast from 'react-hot-toast';
 import { InfinitySpin } from 'react-loader-spinner';
 import { UserDataContext } from '@/components/AppContext';
@@ -29,7 +29,7 @@ const Page = () => {
                 }
             })
             .then(() => setLoading(false));
-    }, []);
+    }, [userData.id]);
 
     const openModal = (user) => {
         setActive(user);

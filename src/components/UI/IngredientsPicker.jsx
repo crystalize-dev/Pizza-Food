@@ -39,7 +39,6 @@ const IngredientsPicker = ({
                     ingredient={ingredient}
                 />
             ))}
-            {/*<div className={'min-h-[300vh]'} />*/}
         </div>
     );
 };

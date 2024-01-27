@@ -7,6 +7,7 @@ export const useMenu = () => {
         categories: [],
         menu: []
     });
+    const [fetching, setFetching] = React.useState(false);
 
     const addCategory = (category) => {
         setMenuData({
@@ -58,6 +59,7 @@ export const useMenu = () => {
 
     React.useEffect(() => {
         const newData = {};
+        setFetching(true);
         axios
             .get('/api/categories')
             .then((res) => {
@@ -79,6 +81,7 @@ export const useMenu = () => {
                     })
                     .then(() => {
                         setMenuData(newData);
+                        setFetching(false);
                     })
                     .catch((err) => toast.error(err));
             })
@@ -96,6 +99,7 @@ export const useMenu = () => {
             addMenuItem,
             updateMenuItem,
             deleteMenuItem
-        }
+        },
+        fetching
     };
 };

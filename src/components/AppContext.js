@@ -10,26 +10,26 @@ import { useCart } from '@/hooks/useCart';
 export const UserDataContext = React.createContext(null);
 export const MenuContext = React.createContext(null);
 export const CartContext = React.createContext(null);
-export const MenuItemModalContext = React.createContext(null);
+export const ModalContext = React.createContext(null);
 
 export function AppProvider({ children }) {
     return (
         <SessionProvider>
             <MenuProvider>
-                <MenuItemModalProvider>
-                    <DataProvider>
+                <ModalProvider>
+                    <UserProvider>
                         <CartProvider>
                             <Toaster />
                             {children}
                         </CartProvider>
-                    </DataProvider>
-                </MenuItemModalProvider>
+                    </UserProvider>
+                </ModalProvider>
             </MenuProvider>
         </SessionProvider>
     );
 }
 
-function DataProvider({ children }) {
+function UserProvider({ children }) {
     const [userData, setUserData] = React.useState(null);
     const session = useSession();
 
@@ -40,6 +40,7 @@ function DataProvider({ children }) {
                 .then((res) => {
                     if (res.status === 200) {
                         setUserData(res.data);
+                        console.log(res.data);
                     }
                 })
                 .catch((err) => toast.error(err));
@@ -65,7 +66,7 @@ function DataProvider({ children }) {
 }
 
 function MenuProvider({ children }) {
-    const { menuData, categoriesActions, menuActions } = useMenu();
+    const { menuData, categoriesActions, menuActions, fetching } = useMenu();
 
     return (
         <MenuContext.Provider
@@ -75,28 +76,53 @@ function MenuProvider({ children }) {
                 menuActions
             }}
         >
-            {children}
+            {fetching ? (
+                <div
+                    className={
+                        'absolute left-0 top-0 flex h-screen w-screen items-center justify-center'
+                    }
+                >
+                    <InfinitySpin color={'var(--main)'} />
+                </div>
+            ) : (
+                children
+            )}
         </MenuContext.Provider>
     );
 }
 
 function CartProvider({ children }) {
     const session = useSession();
-    const { userCart, addToCart, deleteFromCart, decreaseAmount } = useCart(
-        session.data?.user
-    );
+    const {
+        userCart,
+        addToCart,
+        deleteFromCart,
+        decreaseAmount,
+        increaseAmount,
+        proceedOrder,
+        fetching
+    } = useCart(session.data?.user);
 
     return (
         <CartContext.Provider
-            value={{ userCart, addToCart, decreaseAmount, deleteFromCart }}
+            value={{
+                userCart,
+                addToCart,
+                decreaseAmount,
+                deleteFromCart,
+                increaseAmount,
+                proceedOrder,
+                fetching
+            }}
         >
             {children}
         </CartContext.Provider>
     );
 }
 
-function MenuItemModalProvider({ children }) {
+function ModalProvider({ children }) {
     const [menuItemModal, setMenuItemModal] = useState(false);
+    const [cartModal, setCartModal] = useState(false);
     const openMenuItemModal = (menuItem) => {
         setMenuItemModal(menuItem);
     };
@@ -104,11 +130,21 @@ function MenuItemModalProvider({ children }) {
         setMenuItemModal(false);
     };
 
+    const toggleCartModal = (option) => {
+        setCartModal(option);
+    };
+
     return (
-        <MenuItemModalContext.Provider
-            value={{ openMenuItemModal, closeMenuItemModal, menuItemModal }}
+        <ModalContext.Provider
+            value={{
+                openMenuItemModal,
+                closeMenuItemModal,
+                menuItemModal,
+                cartModal,
+                toggleCartModal
+            }}
         >
             {children}
-        </MenuItemModalContext.Provider>
+        </ModalContext.Provider>
     );
 }

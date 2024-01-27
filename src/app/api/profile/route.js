@@ -1,26 +1,105 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function PUT(req) {
-  const data = await req.json();
-  const session = await getServerSession(authOptions);
-  const email = session.user.email;
+    const { user, order } = await req.json();
+    let updatedUser;
 
-  await prisma.user.update({
-    where: { email },
-    data: data,
-  });
+    if (!order) {
+        updatedUser = await prisma.user.update({
+            where: { email: user.email },
+            data: user
+        });
+    } else {
+        const newOrder = await prisma.order.create({
+            data: {
+                price: order.price,
+                user: {
+                    connect: {
+                        email: user.email
+                    }
+                }
+            }
+        });
 
-  return NextResponse.json(true);
+        await Promise.all(
+            order.orderItems.map(async (item) => {
+                const sizeIds = item.size ? [item.size.id] : [];
+                const ingredientsIds = item.ingredients
+                    ? item.ingredients.map((item) => item.id)
+                    : [];
+
+                const sizes = await prisma.size.findMany({
+                    where: { id: { in: sizeIds } }
+                });
+
+                const ingredients = ingredientsIds
+                    ? await prisma.ingredient.findMany({
+                          where: { id: { in: ingredientsIds } }
+                      })
+                    : [];
+
+                console.log(item.name, ingredients);
+
+                return prisma.orderItem.create({
+                    data: {
+                        ...item,
+                        size:
+                            sizes.length > 0
+                                ? { connect: { id: sizes[0].id } }
+                                : undefined,
+                        ingredients:
+                            ingredients.length > 0
+                                ? {
+                                      connect: ingredients.map((i) => ({
+                                          id: i.id
+                                      }))
+                                  }
+                                : undefined,
+                        order: {
+                            connect: { id: newOrder.id }
+                        }
+                    }
+                });
+            })
+        );
+
+        updatedUser = await prisma.user.update({
+            where: { email: user.email },
+            data: {
+                orders: { connect: [{ id: newOrder.id }] }
+            }
+        });
+    }
+
+    NextResponse.json(updatedUser);
+
+    return NextResponse.json(updatedUser);
 }
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  const email = session.user.email;
+    const session = await getServerSession(authOptions);
+    const email = session.user.email;
 
-  return NextResponse.json(await prisma.user.findUnique({ where: { email } }));
+    return NextResponse.json(
+        await prisma.user.findUnique({
+            where: { email },
+            include: {
+                orders: {
+                    include: {
+                        orderItems: {
+                            include: {
+                                size: true,
+                                ingredients: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    );
 }

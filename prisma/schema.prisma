@@ -4,22 +4,22 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 model Account {
-  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String  @db.ObjectId
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String? @db.String
-  access_token       String? @db.String
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String? @db.String
-  session_state      String?
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -35,59 +35,93 @@ model Session {
 }
 
 model User {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String?
-  hashedPassword  String?
-  email           String?   @unique
-  emailVerified   DateTime?
-  image           String?
-  phone           String?
-  address         String?
-  accounts        Account[]
-  sessions        Session[]
-  admin           Boolean   @default(false)
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  hashedPassword String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  phone          String?
+  address        String?
+  accounts       Account[]
+  sessions       Session[]
+  orders         Order[]
+  admin          Boolean   @default(false)
+}
+
+model Order {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  price      Int
+  orderItems OrderItem[]
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String @unique
+  price  Int
+  amount Int
+  image  String
+
+  sizeId String? @db.ObjectId
+  size   Size?   @relation(fields: [sizeId], references: [id])
+
+  ingredients    Ingredient[] @relation(fields: [ingredientsIds], references: [id])
+  ingredientsIds String[]     @db.ObjectId
+
+  orderId String @db.ObjectId
+  order   Order  @relation(fields: [orderId], references: [id])
 }
 
 model Categories {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
 
-  items           MenuItems[]
+  items MenuItems[]
 }
 
 model MenuItems {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String    @unique
-  description     String?
-  price           Int
-  image           String?
-  sizes           Size[]
-  ingredients     Ingredient[]
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  @unique
+  description String?
+  price       Int
+  image       String?
 
-  categoryId      String    @db.ObjectId
-  category        Categories @relation(fields: [categoryId], references: [id])
+  sizeIds String[] @db.ObjectId
+  sizes   Size[]   @relation(fields: [sizeIds], references: [id])
+
+  ingredientsIds String[]     @db.ObjectId
+  ingredients    Ingredient[] @relation(fields: [ingredientsIds], references: [id])
+
+  categoryId String     @db.ObjectId
+  category   Categories @relation(fields: [categoryId], references: [id])
 }
 
 model Size {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String    @unique
-  price           Int
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String @unique
+  price Int
 
-  MenuId          String    @db.ObjectId
-  menuItem        MenuItems @relation(fields: [MenuId], references: [id])
+  MenuIds   String[]    @db.ObjectId
+  menuItems MenuItems[] @relation(fields: [MenuIds], references: [id])
+  orders    OrderItem[]
 }
 
 model Ingredient {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String    @unique
-  price           Int
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String @unique
+  price Int
 
-  MenuId          String    @db.ObjectId
-  menuItem        MenuItems @relation(fields: [MenuId], references: [id])
+  MenuIds   String[]    @db.ObjectId
+  menuItems MenuItems[] @relation(fields: [MenuIds], references: [id])
+  orderIds  String[]    @db.ObjectId
+  orders    OrderItem[] @relation(fields: [orderIds], references: [id])
 }
 
 model VerificationToken {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime

@@ -41,7 +41,7 @@ export default function MenuItem({
                     'flex h-full w-full flex-col-reverse items-center gap-4 text-center md:flex-row md:items-start md:text-start'
                 }
             >
-                <div className="relative min-h-[10rem] w-full min-w-[10rem] md:max-h-[10rem] md:max-w-[10rem]">
+                <div className="relative min-h-[16rem] w-full min-w-[10rem] md:max-h-[10rem] md:min-h-[10rem] md:max-w-[10rem]">
                     <Image
                         className="rounded-md object-fill md:object-contain"
                         src={
@@ -92,7 +92,7 @@ export default function MenuItem({
                         '!rounded-md transition-all hover:bg-red-500 md:!w-fit'
                     }
                     disabled={loading}
-                    confirmAction={() => handleDeleteItem(menuItem.id)}
+                    confirmAction={() => handleDeleteItem(menuItem)}
                     loadingClass={'!bg-red-500'}
                 >
                     Delete

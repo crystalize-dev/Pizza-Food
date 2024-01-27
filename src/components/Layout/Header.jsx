@@ -6,13 +6,35 @@ import React, { useContext, useState } from 'react';
 import Button from '../UI/Button';
 import Icon from '../icon/Icon';
 import MobileModal from '@/components/Modal/MobileModal';
-import { CartContext, UserDataContext } from '@/components/AppContext';
+import {
+    CartContext,
+    ModalContext,
+    UserDataContext
+} from '@/components/AppContext';
 
 export default function Header() {
     const [sidebar, setSidebar] = useState(false);
+    const { toggleCartModal } = useContext(ModalContext);
 
     const { userData, session } = useContext(UserDataContext);
     const { userCart } = useContext(CartContext);
+
+    const CartLink = () => {
+        return (
+            <div
+                onClick={() => toggleCartModal(true)}
+                className={
+                    'shoppingCart cursor-pointer transition-all hover:text-primary'
+                }
+                data-count={userCart.length}
+            >
+                <Icon
+                    icon={'shoppingCart'}
+                    className={'!pointer-events-none'}
+                />
+            </div>
+        );
+    };
 
     return (
         <header className="flex max-h-[6rem] min-h-[6rem] items-center justify-between">
@@ -68,16 +90,7 @@ export default function Header() {
                         </Link>
                     )}
 
-                    <Link
-                        href={'/cart'}
-                        className={'shoppingCart'}
-                        data-count={userCart.length}
-                    >
-                        <Icon
-                            icon={'shoppingCart'}
-                            className={'!pointer-events-none'}
-                        />
-                    </Link>
+                    <CartLink />
 
                     <Icon onClick={() => setSidebar(true)} icon={'menu'} />
                 </div>
@@ -113,16 +126,7 @@ export default function Header() {
                             Logout
                         </Button>
 
-                        <Link
-                            href={'/cart'}
-                            className={'shoppingCart'}
-                            data-count={userCart.length}
-                        >
-                            <Icon
-                                icon={'shoppingCart'}
-                                className={'!pointer-events-none'}
-                            />
-                        </Link>
+                        <CartLink />
                     </>
                 )}
             </nav>

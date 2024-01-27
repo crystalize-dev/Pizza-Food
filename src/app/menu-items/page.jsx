@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
 import Button from '@/components/UI/Button';
 import { AnimatePresence } from 'framer-motion';
-import MenuItem from '@/components/SingleItems/MenuItem';
+import MenuItem from '@/components/cards/MenuItem';
 import MenuModal from '@/components/Modal/MenuModal';
 import { MenuContext } from '@/components/AppContext';
 import axios from 'axios';
@@ -22,14 +22,14 @@ const Page = () => {
         setModal(true);
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (menuItem) => {
         setLoading(true);
 
         const promise = axios
-            .delete('/api/menu', { data: { id: id } })
+            .delete('/api/menu', { data: menuItem })
             .then((res) => {
                 if (res.status === 200) {
-                    menuActions.deleteMenuItem(id);
+                    menuActions.deleteMenuItem(menuItem.id);
                 } else {
                     toast.error('Error on DataBase!');
                 }

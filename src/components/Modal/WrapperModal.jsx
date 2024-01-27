@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Icon from '@/components/icon/Icon';
 
-const WrapperModal = ({ visible, setVisible, children }) => {
+const WrapperModal = ({
+    visible,
+    setVisible,
+    children,
+    closeColor = 'white'
+}) => {
+    const closeModal = () => {
+        const root = document.getElementById('root');
+        root.style.overflow = 'auto';
+        root.style.marginRight = '0';
+        setVisible(false);
+    };
+
+    useEffect(() => {
+        const root = document.getElementById('root');
+
+        if (visible) {
+            root.style.overflow = 'hidden';
+            root.style.marginRight = '9px';
+        }
+    }, [visible]);
+
     return (
         <AnimatePresence>
             {visible && (
@@ -13,14 +34,12 @@ const WrapperModal = ({ visible, setVisible, children }) => {
                     className={
                         'fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/70'
                     }
-                    onMouseDown={() => setVisible(false)}
+                    onMouseDown={closeModal}
                 >
                     <Icon
                         icon={'close'}
-                        onClick={() => setVisible(false)}
-                        className={
-                            'absolute right-2 top-2 z-50 transition-all hover:scale-125 md:text-white'
-                        }
+                        onClick={closeModal}
+                        className={`absolute right-2 top-2 z-50 transition-all hover:scale-125 md:!text-${closeColor}`}
                     />
 
                     {children}

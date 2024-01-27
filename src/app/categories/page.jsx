@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Input from '@/components/UI/Input';
 import Button from '@/components/UI/Button';
-import CategoryItem from '@/components/SingleItems/CategoryItem';
+import CategoryItem from '@/components/cards/CategoryItem';
 import { AnimatePresence } from 'framer-motion';
 import { useCategories } from '@/hooks/useCategories';
 import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';

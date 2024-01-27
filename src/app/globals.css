@@ -16,12 +16,13 @@ section.hero {
     scroll-behavior: smooth;
 }
 
-::-webkit-scrollbar {
+body::-webkit-scrollbar {
     width: 9px;
 }
-::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb {
     background-color: var(--main);
 }
+
 .special-label {
     transition: all 0.2s ease 0s;
 }
@@ -51,7 +52,7 @@ input:focus + p,
 .shoppingCart {
     @apply relative
 }
-.shoppingCart::after {
+.shoppingCart:not([data-count='0'])::after {
     position: absolute;
     content: attr(data-count);
     top: 0;
@@ -66,18 +67,19 @@ input:focus + p,
 
     font-size: 0.8rem;
 
-    color: white;
-
     width: 18px;
     height: 18px;
+
+    color: white;
 
 
     z-index: 40;
 }
 
 @media (max-width: 1010px) {
-    ::-webkit-scrollbar {
+    body::-webkit-scrollbar, .scrollable::-webkit-scrollbar {
         width: 0;
+        scrollbar-width: none;
     }
     section.hero {
         grid-template-columns: 1fr;
