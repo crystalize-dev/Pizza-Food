@@ -16,8 +16,6 @@ const StyledSelect = ({ options, active, setActive, id, order }) => {
         return sortedArray;
     };
 
-    console.log(options);
-
     return (
         <div
             className={

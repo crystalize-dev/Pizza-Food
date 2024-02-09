@@ -63,7 +63,7 @@ const MenuItemModal = () => {
         <WrapperModal visible={menuItemModal} setVisible={closeMenuItemModal}>
             <form
                 className={
-                    'scrollable relative flex h-full w-full flex-col gap-4 bg-white p-8 pr-0 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[500px] md:flex-row md:rounded-lg'
+                    'scrollable relative flex h-full w-full flex-col gap-4 bg-white p-8 pr-0 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[600px] md:flex-row md:rounded-lg'
                 }
                 onSubmit={(e) => submitForm(e)}
                 onMouseDown={(e) => e.stopPropagation()}

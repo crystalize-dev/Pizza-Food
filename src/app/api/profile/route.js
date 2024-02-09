@@ -7,10 +7,9 @@ const prisma = new PrismaClient();
 
 export async function PUT(req) {
     const { user, order } = await req.json();
-    let updatedUser;
 
     if (!order) {
-        updatedUser = await prisma.user.update({
+        return prisma.user.update({
             where: { email: user.email },
             data: user
         });
@@ -43,8 +42,6 @@ export async function PUT(req) {
                       })
                     : [];
 
-                console.log(item.name, ingredients);
-
                 return prisma.orderItem.create({
                     data: {
                         ...item,
@@ -68,17 +65,15 @@ export async function PUT(req) {
             })
         );
 
-        updatedUser = await prisma.user.update({
+        await prisma.user.update({
             where: { email: user.email },
             data: {
                 orders: { connect: [{ id: newOrder.id }] }
             }
         });
+
+        return NextResponse.json(newOrder);
     }
-
-    NextResponse.json(updatedUser);
-
-    return NextResponse.json(updatedUser);
 }
 
 export async function GET() {

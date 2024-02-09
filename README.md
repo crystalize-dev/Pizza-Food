@@ -2,20 +2,18 @@
 
 # Todo:
 
-- Cart saving while flushing !!!
-- 
 - Orders page (Admin)
-- Address warning on submit payment
+- Address warning on submit payment!!!
 
 # Not in rush
 
-- Header links refactor
-- Fix slider in sizes preview
+- Fix slider blinking in sizes preview
 - Pizza loader
 - Categories page (menuItems list preview e.g. some of them)
-- Sort by category in menuItems (Admin)
-- Icons on Categories
+- Sort by category in menuItems (Admin page)
+- Icons on basic Categories
 - ID on images posting
-- Main page (Beautify)
+- All pages (Beautify)
+- Great refactor
   
 # !!!Tests!!!

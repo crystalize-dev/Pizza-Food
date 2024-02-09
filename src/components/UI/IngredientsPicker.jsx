@@ -25,7 +25,7 @@ const IngredientsPicker = ({
     return (
         <div
             className={
-                'grid h-fit w-full grid-cols-2 items-center gap-4 px-2 py-5'
+                'grid h-fit w-full grid-cols-2 items-center gap-2 px-2 py-5'
             }
         >
             {ingredients.map((ingredient) => (

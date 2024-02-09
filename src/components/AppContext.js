@@ -40,7 +40,6 @@ function UserProvider({ children }) {
                 .then((res) => {
                     if (res.status === 200) {
                         setUserData(res.data);
-                        console.log(res.data);
                     }
                 })
                 .catch((err) => toast.error(err));

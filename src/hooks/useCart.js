@@ -4,11 +4,14 @@ import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { UserDataContext } from '@/components/AppContext';
+import { useRouter } from 'next/navigation';
 
 export const useCart = (user) => {
     const [cart, setCart] = useState([]);
     const userCart = cart.filter((cartItem) => cartItem.user === user?.email);
     const [fetching, setFetching] = useState(false);
+
+    const router = useRouter();
 
     const { setUserData } = useContext(UserDataContext);
 
@@ -84,7 +87,10 @@ export const useCart = (user) => {
                 setFetching(false);
                 if (response.status === 200) {
                     setUserData(response.data);
-                    // setCart([]);
+                    setCart([]);
+                    localStorage.setItem('cart', '[]');
+
+                    router.push(`/orders/${response.data.id}`);
                 }
             });
 
