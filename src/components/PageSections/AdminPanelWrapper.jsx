@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminPanel from '@/components/Layout/AdminPanel';
+import AdminPanel from '@/components/PageSections/AdminPanel';
 
 const AdminPanelWrapper = ({ children, title, isAdmin = false }) => {
     return (
@@ -8,7 +8,7 @@ const AdminPanelWrapper = ({ children, title, isAdmin = false }) => {
                 {title}
             </h1>
 
-            {isAdmin && <AdminPanel active={title} />}
+            <AdminPanel active={title} isAdmin={isAdmin} />
 
             {children}
         </section>

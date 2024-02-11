@@ -1,7 +1,7 @@
-import AboutUs from '@/components/Layout/AboutUs';
-import ContactUs from '@/components/Layout/ContactUs';
-import Hero from '@/components/Layout/Hero';
-import HomeMenu from '@/components/Layout/HomeMenu';
+import AboutUs from '@/components/PageSections/AboutUs';
+import ContactUs from '@/components/PageSections/ContactUs';
+import Hero from '@/components/PageSections/Hero';
+import HomeMenu from '@/components/PageSections/HomeMenu';
 import React from 'react';
 
 export default function Home() {

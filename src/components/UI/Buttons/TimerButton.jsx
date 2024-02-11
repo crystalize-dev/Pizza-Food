@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Button from '@/components/UI/Button';
+import Button from '@/components/UI/Buttons/Button';
 
 const TimerButton = ({
     cancelAction,

@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Button from '@/components/UI/Button';
+import Button from '@/components/UI/Buttons/Button';
 import Icon from '@/components/icon/Icon';
-import TimerButton from '@/components/UI/TimerButton';
+import TimerButton from '@/components/UI/Buttons/TimerButton';
 import Image from 'next/image';
 
-const UserItem = ({ user, index, loading, handleDeleteItem, openModal }) => {
+const UserCard = ({ user, index, loading, handleDeleteItem, openModal }) => {
     const userVariants = {
         visible: (i) => ({
             opacity: 1,
@@ -96,4 +96,4 @@ const UserItem = ({ user, index, loading, handleDeleteItem, openModal }) => {
     );
 };
 
-export default UserItem;
+export default UserCard;

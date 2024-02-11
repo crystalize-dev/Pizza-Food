@@ -1,10 +1,10 @@
 import React from 'react';
-import SectionHeaders from '../UI/SectionHeaders';
+import SectionHeader from '../UI/SectionHeader';
 
 export default function AboutUs() {
     return (
         <section className="my-16 text-center">
-            <SectionHeaders subHeader={'Our story'} mainHeader={'About us'} />
+            <SectionHeader subHeader={'Our story'} mainHeader={'About us'} />
             <div className="mx-auto mt-4 flex max-w-2xl flex-col gap-4 text-gray-500">
                 <p>
                     Consectetur proident laborum aute ullamco incididunt. Sint

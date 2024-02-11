@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { customAxios } from '@/axios/customAxios';
 
 export const useMenu = () => {
     const [menuData, setMenuData] = React.useState({
@@ -8,6 +9,7 @@ export const useMenu = () => {
         menu: []
     });
     const [fetching, setFetching] = React.useState(false);
+    const [loadingModal, setLoadingModal] = React.useState(false);
 
     const addCategory = (category) => {
         setMenuData({
@@ -40,6 +42,19 @@ export const useMenu = () => {
         setMenuData({ ...menuData, menu: [...menuData.menu, menuItem] });
     };
 
+    const handleAddNewMenuItem = async (newItem, onSuccess) => {
+        await customAxios('POST', 'menu', setLoadingModal, {
+            data: newItem,
+            actionOnSuccess: (data) => {
+                newItem['id'] = data.id;
+                addMenuItem(newItem);
+                onSuccess && onSuccess();
+            },
+            loadingString: 'Loading...',
+            successString: 'Success!'
+        });
+    };
+
     const updateMenuItem = (id, menuItem) => {
         setMenuData({
             ...menuData,
@@ -50,6 +65,16 @@ export const useMenu = () => {
         });
     };
 
+    const handleUpdateMenuItem = async (updatedItem, onSuccess) => {
+        await customAxios('PUT', 'menu', setLoadingModal, {
+            data: updatedItem,
+            actionOnSuccess: (data) => {
+                onSuccess && onSuccess();
+                updateMenuItem(data.id, data);
+            }
+        });
+    };
+
     const deleteMenuItem = (id) => {
         setMenuData({
             ...menuData,
@@ -57,49 +82,48 @@ export const useMenu = () => {
         });
     };
 
+    const handleDeleteMenuItem = async (menuItem) => {
+        await customAxios('DELETE', 'menu', setLoadingModal, {
+            data: { data: menuItem },
+            actionOnSuccess: () => {
+                deleteMenuItem(menuItem.id);
+            },
+            loadingString: 'Deleting...',
+            successString: 'Menu item deleted!'
+        });
+    };
+
     React.useEffect(() => {
-        const newData = {};
-        setFetching(true);
-        axios
-            .get('/api/categories')
-            .then((res) => {
-                if (res.status === 200) {
-                    newData['categories'] = res.data;
-                } else {
-                    toast.error('Error on DataBase!');
-                }
-            })
-            .then(() => {
-                axios
-                    .get('/api/menu')
-                    .then((res) => {
-                        if (res.status === 200) {
-                            newData['menu'] = res.data;
-                        } else {
-                            toast.error('Error on DataBase!');
-                        }
-                    })
-                    .then(() => {
+        const newData = { menu: [], categories: [] };
+
+        customAxios('GET', 'menu', setFetching, {
+            actionOnSuccess: (data) => {
+                newData.menu = data;
+
+                customAxios('GET', 'categories', setFetching, {
+                    actionOnSuccess: (data) => {
+                        newData.categories = data;
                         setMenuData(newData);
-                        setFetching(false);
-                    })
-                    .catch((err) => toast.error(err));
-            })
-            .catch((err) => toast.error(err));
+                    }
+                }).then(() => {});
+            }
+        }).then(() => {});
     }, []);
 
     return {
         menuData,
+        menuActions: {
+            handleAddNewMenuItem,
+            handleUpdateMenuItem,
+            handleDeleteMenuItem
+        },
         categoriesActions: {
             addCategory,
-            updateCategory,
-            deleteCategory
+            deleteCategory,
+            updateCategory
         },
-        menuActions: {
-            addMenuItem,
-            updateMenuItem,
-            deleteMenuItem
-        },
-        fetching
+        fetching,
+        loadingModal,
+        setLoadingModal
     };
 };

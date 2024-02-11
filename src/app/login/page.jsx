@@ -4,8 +4,8 @@ import Image from 'next/image';
 import React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/UI/Input';
-import Button from '../../components/UI/Button';
+import Input from '@/components/UI/Inputs/Input';
+import Button from '../../components/UI/Buttons/Button';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -38,9 +38,9 @@ export default function LoginPage() {
             error: (err) => `${err}`
         });
     }
-    const authWithGoogle = () => {
+    const authWithGoogle = async () => {
         setLoading(true);
-        signIn('google', { callbackUrl: '/' });
+        await signIn('google', { callbackUrl: '/' });
     };
 
     return (

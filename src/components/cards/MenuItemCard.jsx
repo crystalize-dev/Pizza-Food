@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from '@/components/UI/Button';
+import Button from '@/components/UI/Buttons/Button';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import TimerButton from '@/components/UI/TimerButton';
+import TimerButton from '@/components/UI/Buttons/TimerButton';
 import Icon from '@/components/icon/Icon';
 
-export default function MenuItem({
+export default function MenuItemCard({
     menuItem,
     index,
     openModal,

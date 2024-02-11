@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Input from '@/components/UI/Input';
-import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Inputs/Input';
+import Button from '@/components/UI/Buttons/Button';
 import Icon from '@/components/icon/Icon';
 import { motion } from 'framer-motion';
-import TimerButton from '@/components/UI/TimerButton';
+import TimerButton from '@/components/UI/Buttons/TimerButton';
 
-const CategoryItem = ({
+const CategoryCard = ({
     category,
     active,
     index,
@@ -130,4 +130,4 @@ const CategoryItem = ({
     );
 };
 
-export default CategoryItem;
+export default CategoryCard;

@@ -1,8 +1,8 @@
 'use client';
 import Image from 'next/image';
 import React, { useContext, useEffect, useState } from 'react';
-import SectionHeaders from '../UI/SectionHeaders';
-import { MenuContext } from '@/components/AppContext';
+import SectionHeader from '../UI/SectionHeader';
+import { MenuContext } from '@/context/AppContext';
 import MenuCard from '@/components/cards/MenuCard';
 
 export default function HomeMenu() {
@@ -13,8 +13,10 @@ export default function HomeMenu() {
     useEffect(() => {
         setPizzas(
             menuData.menu
-                .filter((pizza) => pizza.category.name === 'Pizza')
-                .slice(-3)
+                ? menuData.menu
+                      .filter((pizza) => pizza.category.name === 'Pizza')
+                      .slice(-3)
+                : []
         );
     }, [menuData.menu]);
 
@@ -39,7 +41,7 @@ export default function HomeMenu() {
                 </div>
             </div>
 
-            <SectionHeaders
+            <SectionHeader
                 subHeader={'Check out'}
                 mainHeader={'Our best sellers'}
             />

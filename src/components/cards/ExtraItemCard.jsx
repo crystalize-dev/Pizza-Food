@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Input from '@/components/UI/Input';
-import Button from '@/components/UI/Button';
+import Input from '@/components/UI/Inputs/Input';
+import Button from '@/components/UI/Buttons/Button';
 import Icon from '@/components/icon/Icon';
 import { motion } from 'framer-motion';
 
-const ExtrasItem = ({ item, changeCallback, handleDelete }) => {
+const ExtraItemCard = ({ item, changeCallback, handleDelete }) => {
     const [name, setName] = useState(item.name);
     const [price, setPrice] = useState(item.price);
 
@@ -55,4 +55,4 @@ const ExtrasItem = ({ item, changeCallback, handleDelete }) => {
     );
 };
 
-export default ExtrasItem;
+export default ExtraItemCard;

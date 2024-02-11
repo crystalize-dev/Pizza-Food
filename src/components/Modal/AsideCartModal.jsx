@@ -1,13 +1,13 @@
 'use client';
 import React, { useContext } from 'react';
-import { CartContext, ModalContext } from '@/components/AppContext';
-import WrapperModal from '@/components/Modal/WrapperModal';
+import { CartContext, ModalContext } from '@/context/AppContext';
+import ModalWrapper from '@/components/Modal/ModalWrapper';
 import { AnimatePresence, motion } from 'framer-motion';
-import CartItemCard from '@/components/cards/CartItemCard';
+import CartCard from '@/components/cards/CartCard';
 import Image from 'next/image';
-import Button from '@/components/UI/Button';
+import Button from '@/components/UI/Buttons/Button';
 
-const CartModal = () => {
+const AsideCartModal = () => {
     const { cartModal, toggleCartModal } = useContext(ModalContext);
     const { userCart, proceedOrder, fetching } = useContext(CartContext);
 
@@ -26,7 +26,7 @@ const CartModal = () => {
     };
 
     return (
-        <WrapperModal
+        <ModalWrapper
             closeColor={'black'}
             visible={cartModal}
             setVisible={toggleCartModal}
@@ -87,7 +87,7 @@ const CartModal = () => {
                         >
                             <AnimatePresence>
                                 {userCart.map((cartItem, index) => (
-                                    <CartItemCard
+                                    <CartCard
                                         index={index}
                                         key={cartItem.id}
                                         cartItem={cartItem}
@@ -98,7 +98,7 @@ const CartModal = () => {
 
                         <div
                             className={
-                                'shadow-top sticky bottom-0 mt-auto flex h-60 min-h-[15rem] w-full flex-col gap-2 bg-white p-6'
+                                'sticky bottom-0 mt-auto flex h-60 min-h-[15rem] w-full flex-col gap-2 bg-white p-6 shadow-top'
                             }
                         >
                             <div
@@ -140,8 +140,8 @@ const CartModal = () => {
                     </>
                 )}
             </motion.form>
-        </WrapperModal>
+        </ModalWrapper>
     );
 };
 
-export default CartModal;
+export default AsideCartModal;

@@ -1,63 +1,35 @@
 'use client';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
-import Link from 'next/link';
 import React, { useState } from 'react';
-import Button from '../../components/UI/Button';
-import Input from '../../components/UI/Input';
-import toast from 'react-hot-toast';
-import axios from 'axios';
+import Button from '../../components/UI/Buttons/Button';
+import Input from '../../components/UI/Inputs/Input';
+import { customAxios } from '@/axios/customAxios';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const router = useRouter();
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
-        setLoading(true);
-        const promise = axios
-            .post('/api/register', { email, password })
-            .then((res) => {
-                if (res.status !== 200) {
-                    toast.error('Please check your password and email!');
-                }
-            });
-
-        setLoading(false);
-
-        toast.promise(
-            promise,
-            {
-                loading: 'Loading...',
-                success: (
-                    <p>
-                        Success! Now you can{' '}
-                        <Link
-                            href="/login"
-                            className="cursor-pointer text-purple-700"
-                        >
-                            login
-                        </Link>
-                    </p>
-                ),
-                error: (err) => `${err}`
+        await customAxios('POST', 'register', setLoading, {
+            data: { email, password },
+            actionOnSuccess: () => {
+                router.push('/login');
             },
-            {
-                success: {
-                    duration: 5000
-                },
-                error: {
-                    duration: 10000
-                }
-            }
-        );
+            loadingString: 'Loading...',
+            successString: 'Registration Success!'
+        });
     };
 
-    const authWithGoogle = () => {
+    const authWithGoogle = async () => {
         setLoading(true);
-        signIn('google', { callbackUrl: '/' });
+        await signIn('google', { callbackUrl: '/' });
     };
 
     return (

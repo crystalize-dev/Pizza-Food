@@ -1,105 +1,91 @@
 import { useContext, useState } from 'react';
-import { MenuContext } from '@/components/AppContext';
+import { MenuContext } from '@/context/AppContext';
 import toast from 'react-hot-toast';
-import axios from 'axios';
+import { customAxios } from '@/axios/customAxios';
 
 export const useCategories = ({ categoryName, setCategoryName }) => {
     const [loading, setLoading] = useState(false);
+    const url = 'categories';
 
     const { menuData, categoriesActions } = useContext(MenuContext);
 
     const handleNewCategory = async (e) => {
         e.preventDefault();
 
+        // Если поле имя пустое
         if (!categoryName) {
-            toast.error('Write a category name!');
+            toast.error('Type a category name!');
             return;
         }
 
-        setLoading(true);
+        // Если категория уже существует
+        if (
+            menuData.categories.find(
+                (category) => category.name === categoryName
+            )
+        ) {
+            toast.error('This category already exists!');
+            return;
+        }
 
-        const promise = axios
-            .post('/api/categories', { name: categoryName })
-            .then((res) => {
-                if (res.status === 200) {
-                    categoriesActions.addCategory(res.data);
-                    setCategoryName('');
-                } else {
-                    toast.error('Error on DataBase!');
-                }
-            })
-            .catch((err) => toast.error(err));
-
-        await toast.promise(promise, {
-            loading: 'Saving...',
-            success: 'Category saved!',
-            error: 'Some error occurred!'
+        await customAxios('POST', url, setLoading, {
+            data: {
+                name: categoryName
+            },
+            actionOnSuccess: (data) => {
+                categoriesActions.addCategory(data);
+                setCategoryName('');
+            },
+            loadingString: 'Saving...',
+            successString: 'Category created!'
         });
-
-        setLoading(false);
     };
 
     const handleUpdate = async (category) => {
-        setLoading(true);
         let response;
 
-        const promise = axios
-            .put('/api/categories', category)
-            .then((res) => {
-                if (res.status === 200) {
-                    categoriesActions.updateCategory(
-                        category.id,
-                        category.name
-                    );
-                } else {
-                    toast.error('Error on DataBase!');
-                    response = false;
-                }
-            })
-            .catch((err) => toast.error(err));
+        // Если категория уже существует
+        if (
+            menuData.categories.find(
+                (oldCategory) => oldCategory.name === category.name
+            )
+        ) {
+            toast.error('This category already exists!');
+            response = false;
+            setLoading(false);
+            return;
+        }
 
-        await toast.promise(promise, {
-            loading: 'Updating...',
-            success: () => {
+        await customAxios('PUT', url, setLoading, {
+            data: category,
+            actionOnSuccess: (data) => {
                 response = true;
-                return 'Category updated!';
+                categoriesActions.updateCategory(data.id, data.name);
             },
-            error: () => {
+            actionOnFailure: () => {
                 response = false;
-                return 'Some error occurred!';
-            }
+            },
+            loadingString: 'Updating...',
+            successString: 'Category updated!'
         });
-
-        setLoading(false);
 
         return response;
     };
 
     const handleDelete = async (categoryId) => {
-        setLoading(true);
-
-        const promise = axios
-            .delete('/api/categories', { data: { id: categoryId } })
-            .then((res) => {
-                if (res.status === 200) {
-                    categoriesActions.deleteCategory(categoryId);
-                }
-                setLoading(false);
-            })
-            .catch((err) => {
-                setLoading(false);
-                return Promise.reject(err.response.data.error);
-            });
-
-        await toast.promise(promise, {
-            loading: 'Deleting...',
-            success: 'Category deleted!',
-            error: (err) => `${err}`
+        await customAxios('DELETE', url, setLoading, {
+            data: {
+                data: { id: categoryId }
+            },
+            actionOnSuccess: () => {
+                categoriesActions.deleteCategory(categoryId);
+            },
+            loadingString: 'Deleting...',
+            successString: 'Category deleted!'
         });
     };
 
     return {
-        menuData,
         handleUpdate,
         handleDelete,
         handleNewCategory,

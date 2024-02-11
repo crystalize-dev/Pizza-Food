@@ -1,8 +1,8 @@
 'use client';
 import React, { useContext, useState } from 'react';
-import { MenuContext } from '@/components/AppContext';
+import { MenuContext } from '@/context/AppContext';
 import MenuCard from '@/components/cards/MenuCard';
-import Button from '@/components/UI/Button';
+import Button from '@/components/UI/Buttons/Button';
 
 const Page = () => {
     const { menuData } = useContext(MenuContext);
@@ -70,20 +70,31 @@ const Page = () => {
                             {category.name}
                         </h1>
                     )}
-                    <div
-                        className={
-                            'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'
-                        }
-                    >
-                        {menuData.menu
-                            .filter(
-                                (menuItem) =>
-                                    menuItem.category.name === category.name
-                            )
-                            .map((item) => (
-                                <MenuCard key={item.id} menuItem={item} />
-                            ))}
-                    </div>
+
+                    {menuData?.menu?.length !== 0 ? (
+                        <div
+                            className={
+                                'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'
+                            }
+                        >
+                            {menuData.menu
+                                .filter(
+                                    (menuItem) =>
+                                        menuItem.category.name === category.name
+                                )
+                                .map((item) => (
+                                    <MenuCard key={item.id} menuItem={item} />
+                                ))}
+                        </div>
+                    ) : (
+                        <h1
+                            className={
+                                'my-4 text-center text-2xl font-bold text-zinc-300'
+                            }
+                        >
+                            Nothing found!
+                        </h1>
+                    )}
                 </div>
             ))}
         </section>

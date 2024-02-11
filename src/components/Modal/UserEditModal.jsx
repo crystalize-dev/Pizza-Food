@@ -1,51 +1,41 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import WrapperModal from '@/components/Modal/WrapperModal';
-import ImageUpload from '@/components/UI/ImageUpload';
-import Input from '@/components/UI/Input';
+import ModalWrapper from '@/components/Modal/ModalWrapper';
+import ImageUpload from '@/components/UI/Inputs/ImageUpload';
+import Input from '@/components/UI/Inputs/Input';
 import PhoneInput from 'react-phone-input-2';
-import Button from '@/components/UI/Button';
-import CustomCheckbox from '@/components/UI/CustomCheckbox';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import Button from '@/components/UI/Buttons/Button';
+import CustomCheckbox from '@/components/UI/Inputs/CustomCheckbox';
 
-const UsersModal = ({ visible, setVisible, user, updateUser }) => {
+const UserEditModal = ({
+    visible,
+    setVisible,
+    user,
+    updateUser,
+    loading,
+    setLoading
+}) => {
     const [email, setEmail] = useState('');
     const [userName, setUserName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
-    const [fetching, setFetching] = useState(false);
     const [image, setImage] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
 
     const submitForm = async (e) => {
         e.preventDefault();
 
-        setFetching(true);
-        const promise = axios
-            .put('/api/users', {
+        await updateUser(
+            {
                 email: email,
                 name: userName,
                 image: image,
                 address: address,
                 phone: phoneNumber,
                 admin: isAdmin
-            })
-            .then((response) => {
-                setFetching(false);
-                if (response.status === 200) {
-                    updateUser(response.data);
-                    setVisible(false);
-                }
-            });
-
-        await toast.promise(promise, {
-            loading: 'Saving...',
-            success: 'Profile saved!',
-            error: 'Some error occurred!'
-        });
-
-        setFetching(false);
+            },
+            () => setVisible(false)
+        );
     };
 
     const onChangeAvatar = (link) => {
@@ -73,7 +63,7 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
     }, [user, visible]);
 
     return (
-        <WrapperModal visible={visible} setVisible={setVisible}>
+        <ModalWrapper visible={visible} setVisible={setVisible}>
             <div
                 className={
                     'scrollable relative flex h-full w-full flex-col gap-4 bg-white px-8 py-8 pt-16 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[500px] md:flex-row md:rounded-lg md:pt-8'
@@ -82,8 +72,8 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
             >
                 <ImageUpload
                     image={image}
-                    fetching={fetching}
-                    setFetching={setFetching}
+                    fetching={loading}
+                    setFetching={setLoading}
                     onChange={onChangeAvatar}
                 />
 
@@ -100,7 +90,7 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
 
                     <Input
                         placeholder="John Anderson"
-                        disabled={fetching}
+                        disabled={loading}
                         label={'Your name'}
                         type="text"
                         value={userName}
@@ -109,7 +99,7 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
                     />
 
                     <PhoneInput
-                        disabled={fetching}
+                        disabled={loading}
                         specialLabel="Phone Number"
                         country={'ru'}
                         containerClass="text-sm -mt-4 text-gray-400 transition-all"
@@ -121,7 +111,7 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
                     />
 
                     <Input
-                        disabled={fetching}
+                        disabled={loading}
                         placeholder="Moscow city, 13"
                         label="Address"
                         type="text"
@@ -132,12 +122,12 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
                     <CustomCheckbox
                         value={isAdmin}
                         setValue={setIsAdmin}
-                        disabled={fetching}
+                        disabled={loading}
                         label={'Administrator'}
                     />
 
                     <Button
-                        disabled={fetching}
+                        disabled={loading}
                         type="submit"
                         className="mt-2 !w-full !rounded-lg"
                     >
@@ -145,8 +135,8 @@ const UsersModal = ({ visible, setVisible, user, updateUser }) => {
                     </Button>
                 </form>
             </div>
-        </WrapperModal>
+        </ModalWrapper>
     );
 };
 
-export default UsersModal;
+export default UserEditModal;

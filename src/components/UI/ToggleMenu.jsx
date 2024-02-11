@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Icon from '@/components/icon/Icon';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const ToggleBar = ({ title, children }) => {
+const ToggleMenu = ({ title, children }) => {
     const [toggled, setToggled] = useState(false);
 
     const variants = {
@@ -46,4 +46,4 @@ const ToggleBar = ({ title, children }) => {
     );
 };
 
-export default ToggleBar;
+export default ToggleMenu;

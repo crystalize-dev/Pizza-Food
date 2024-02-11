@@ -1,11 +1,11 @@
 'use client';
 import React, { useContext, useEffect, useState } from 'react';
-import WrapperModal from '@/components/Modal/WrapperModal';
-import { CartContext, ModalContext } from '@/components/AppContext';
+import ModalWrapper from '@/components/Modal/ModalWrapper';
+import { CartContext, ModalContext } from '@/context/AppContext';
 import Image from 'next/image';
-import StyledSelect from '@/components/UI/StyledSelect';
-import IngredientsPicker from '@/components/UI/IngredientsPicker';
-import Button from '@/components/UI/Button';
+import StyledSelect from '@/components/UI/Inputs/StyledSelect';
+import IngredientsPicker from '@/components/UI/Inputs/IngredientsPicker';
+import Button from '@/components/UI/Buttons/Button';
 import toast from 'react-hot-toast';
 
 const MenuItemModal = () => {
@@ -60,7 +60,7 @@ const MenuItemModal = () => {
     }, [menuItemModal]);
 
     return (
-        <WrapperModal visible={menuItemModal} setVisible={closeMenuItemModal}>
+        <ModalWrapper visible={menuItemModal} setVisible={closeMenuItemModal}>
             <form
                 className={
                     'scrollable relative flex h-full w-full flex-col gap-4 bg-white p-8 pr-0 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[600px] md:flex-row md:rounded-lg'
@@ -118,7 +118,7 @@ const MenuItemModal = () => {
                     </Button>
                 </div>
             </form>
-        </WrapperModal>
+        </ModalWrapper>
     );
 };
 

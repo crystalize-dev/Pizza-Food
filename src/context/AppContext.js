@@ -2,10 +2,10 @@
 import { SessionProvider, useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useMenu } from '@/hooks/useMenu';
-import axios from 'axios';
 import { useCart } from '@/hooks/useCart';
+import { useProfile } from '@/hooks/useProfile';
 
 export const UserDataContext = React.createContext(null);
 export const MenuContext = React.createContext(null);
@@ -15,77 +15,73 @@ export const ModalContext = React.createContext(null);
 export function AppProvider({ children }) {
     return (
         <SessionProvider>
-            <MenuProvider>
+            <DBDataProvider>
                 <ModalProvider>
-                    <UserProvider>
-                        <CartProvider>
-                            <Toaster />
-                            {children}
-                        </CartProvider>
-                    </UserProvider>
+                    <CartProvider>
+                        <Toaster />
+                        {children}
+                    </CartProvider>
                 </ModalProvider>
-            </MenuProvider>
+            </DBDataProvider>
         </SessionProvider>
     );
 }
 
-function UserProvider({ children }) {
-    const [userData, setUserData] = React.useState(null);
+function DBDataProvider({ children }) {
     const session = useSession();
 
-    React.useEffect(() => {
-        if (session.status === 'authenticated') {
-            axios
-                .get('/api/profile')
-                .then((res) => {
-                    if (res.status === 200) {
-                        setUserData(res.data);
-                    }
-                })
-                .catch((err) => toast.error(err));
-        }
-    }, [session, session.status]);
-
-    return (
-        <UserDataContext.Provider value={{ userData, setUserData, session }}>
-            {(session.status === 'authenticated' && !userData) ||
-            session.status === 'loading' ? (
-                <div
-                    className={
-                        'absolute left-0 top-0 flex h-screen w-screen items-center justify-center'
-                    }
-                >
-                    <InfinitySpin color={'var(--main)'} />
-                </div>
-            ) : (
-                children
-            )}
-        </UserDataContext.Provider>
-    );
-}
-
-function MenuProvider({ children }) {
-    const { menuData, categoriesActions, menuActions, fetching } = useMenu();
+    const {
+        menuData,
+        menuActions,
+        categoriesActions,
+        fetching,
+        loadingModal,
+        setLoadingModal
+    } = useMenu();
+    const {
+        userData,
+        fetchingUser,
+        fetchingUpdate,
+        setFetchingUpdate,
+        handleProfileUpdate
+    } = useProfile(session);
 
     return (
         <MenuContext.Provider
             value={{
                 menuData,
+                menuActions,
                 categoriesActions,
-                menuActions
+                fetching,
+                loadingModal,
+                setLoadingModal
             }}
         >
-            {fetching ? (
-                <div
-                    className={
-                        'absolute left-0 top-0 flex h-screen w-screen items-center justify-center'
-                    }
-                >
-                    <InfinitySpin color={'var(--main)'} />
-                </div>
-            ) : (
-                children
-            )}
+            <UserDataContext.Provider
+                value={{
+                    session,
+                    userData,
+                    fetchingUser,
+                    fetchingUpdate,
+                    setFetchingUpdate,
+                    handleProfileUpdate
+                }}
+            >
+                {(session.status === 'authenticated' && !userData) ||
+                session.status === 'loading' ||
+                fetching ||
+                fetchingUser ? (
+                    <div
+                        className={
+                            'bg-reed-500 absolute left-0 top-0 flex h-screen w-full items-center justify-center'
+                        }
+                    >
+                        <InfinitySpin color={'var(--main)'} />
+                    </div>
+                ) : (
+                    children
+                )}
+            </UserDataContext.Provider>
         </MenuContext.Provider>
     );
 }

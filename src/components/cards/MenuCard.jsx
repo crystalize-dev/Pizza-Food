@@ -1,8 +1,8 @@
 'use client';
 import React, { useContext } from 'react';
 import Image from 'next/image';
-import Button from '@/components/UI/Button';
-import { CartContext, ModalContext } from '@/components/AppContext';
+import Button from '@/components/UI/Buttons/Button';
+import { CartContext, ModalContext } from '@/context/AppContext';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';

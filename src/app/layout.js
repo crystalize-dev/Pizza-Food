@@ -1,13 +1,13 @@
-import { Rubik } from 'next/font/google';
+import { Poppins, Rubik } from 'next/font/google';
 import './globals.css';
 import React from 'react';
-import { AppProvider } from '@/components/AppContext';
-import Header from '@/components/Layout/Header';
-import Footer from '@/components/Layout/Footer';
+import { AppProvider } from '@/context/AppContext';
+import Header from '@/components/PageSections/Header';
+import Footer from '@/components/PageSections/Footer';
 import MenuItemModal from '@/components/Modal/MenuItemModal';
-import CartModal from '@/components/Modal/CartModal';
+import AsideCartModal from '@/components/Modal/AsideCartModal';
 
-const roboto = Rubik({
+const roboto = Poppins({
     subsets: ['latin'],
     weight: ['400', '500', '600']
 });
@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
 
                         <MenuItemModal />
 
-                        <CartModal />
+                        <AsideCartModal />
 
                         {children}
 

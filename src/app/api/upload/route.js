@@ -1,3 +1,5 @@
+// noinspection JSCheckFunctionSignatures
+
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
@@ -17,13 +19,13 @@ export async function POST(req) {
                     });
                 } else {
                     Response = NextResponse.json(
-                        { message: 'Error!' },
+                        { message: 'Something went wrong!' },
                         { status: res.status }
                     );
                 }
             })
             .catch((err) => {
-                Response = NextResponse.json(err, { status: 400 });
+                Response = NextResponse.json({ error: err }, { status: 400 });
             });
     } else {
         Response = NextResponse.json(

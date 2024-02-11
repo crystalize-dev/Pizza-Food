@@ -1,60 +1,45 @@
 'use client';
 import React, { useContext, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
-import Input from '../../components/UI/Input';
-import toast from 'react-hot-toast';
-import Button from '../../components/UI/Button';
-import { UserDataContext } from '@/components/AppContext';
-import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
-import ImageUpload from '@/components/UI/ImageUpload';
-import axios from 'axios';
+import Input from '../../components/UI/Inputs/Input';
+import Button from '../../components/UI/Buttons/Button';
+import { UserDataContext } from '@/context/AppContext';
+import AdminPanelWrapper from '@/components/PageSections/AdminPanelWrapper';
+import ImageUpload from '@/components/UI/Inputs/ImageUpload';
 
 export default function ProfilePage() {
-    const { userData, setUserData, session } = useContext(UserDataContext);
+    const {
+        userData,
+        handleProfileUpdate,
+        session,
+        fetchingUpdate,
+        setFetchingUpdate
+    } = useContext(UserDataContext);
 
-    const [userName, setUserName] = useState(userData.name);
+    const [userName, setUserName] = useState(
+        userData.name ? userData.name : ''
+    );
     const [email, setEmail] = useState(userData.email);
     const [image, setImage] = useState(
         userData.image ? userData.image : '/default-avatar.jpg'
     );
-    const [phoneNumber, setPhoneNumber] = useState(userData.phone);
-    const [address, setAddress] = useState(userData.address);
-    const [fetching, setFetching] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState(
+        userData.phone ? userData.phone : ''
+    );
+    const [address, setAddress] = useState(
+        userData.address ? userData.address : ''
+    );
 
     const handleProfileInfoUpdate = async (e) => {
         e.preventDefault();
 
-        setFetching(true);
-
-        const promise = axios
-            .post('/api/profile', {
-                name: userName,
-                image: image,
-                address: address,
-                phone: phoneNumber
-            })
-            .then((res) => {
-                if (res.status === 200) {
-                    setUserData({
-                        ...userData,
-                        name: userName,
-                        image: image,
-                        phone: phoneNumber,
-                        address: address
-                    });
-                } else {
-                    toast.error('Error on DataBase!');
-                }
-            })
-            .catch((err) => toast.error(err));
-
-        await toast.promise(promise, {
-            loading: 'Saving...',
-            success: 'Profile saved!',
-            error: 'Some error occurred!'
+        await handleProfileUpdate({
+            email: email,
+            name: userName,
+            image: image,
+            address: address,
+            phone: phoneNumber
         });
-
-        setFetching(false);
     };
 
     const onChangeAvatar = (link) => {
@@ -74,8 +59,8 @@ export default function ProfilePage() {
             <div className="mx-auto mt-12 flex w-full max-w-2xl flex-col items-center justify-between gap-16 px-8 md:flex-row md:items-start">
                 <ImageUpload
                     image={image}
-                    fetching={fetching}
-                    setFetching={setFetching}
+                    fetching={fetchingUpdate}
+                    setFetching={setFetchingUpdate}
                     onChange={onChangeAvatar}
                 />
 
@@ -91,14 +76,14 @@ export default function ProfilePage() {
                     />
                     <Input
                         placeholder="John Anderson"
-                        disabled={fetching}
+                        disabled={fetchingUpdate}
                         label={'Your name'}
                         type="text"
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                     />
                     <PhoneInput
-                        disabled={fetching}
+                        disabled={fetchingUpdate}
                         specialLabel="Phone Number"
                         country={'ru'}
                         containerClass="text-sm -mt-4 text-gray-400 transition-all"
@@ -110,7 +95,7 @@ export default function ProfilePage() {
                     />
 
                     <Input
-                        disabled={fetching}
+                        disabled={fetchingUpdate}
                         placeholder="Moscow city, 13"
                         label="Address"
                         type="text"
@@ -119,7 +104,7 @@ export default function ProfilePage() {
                     />
 
                     <Button
-                        disabled={fetching}
+                        disabled={fetchingUpdate}
                         type="submit"
                         className="mt-2 !w-full !rounded-lg"
                     >

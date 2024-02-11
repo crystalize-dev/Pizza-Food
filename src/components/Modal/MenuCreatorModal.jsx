@@ -1,19 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import ImageUpload from '@/components/UI/ImageUpload';
+import ImageUpload from '@/components/UI/Inputs/ImageUpload';
 import toast from 'react-hot-toast';
-import Input from '@/components/UI/Input';
-import Button from '@/components/UI/Button';
-import ToggleBar from '@/components/UI/ToggleBar';
-import ExtrasItem from '@/components/cards/ExtrasItem';
-import axios from 'axios';
-import { MenuContext } from '@/components/AppContext';
+import Input from '@/components/UI/Inputs/Input';
+import Button from '@/components/UI/Buttons/Button';
+import ToggleMenu from '@/components/UI/ToggleMenu';
+import ExtraItemCard from '@/components/cards/ExtraItemCard';
+import { MenuContext } from '@/context/AppContext';
 import { useExtra } from '@/hooks/useExtra';
-import MySelect from '@/components/UI/MySelect';
-import WrapperModal from '@/components/Modal/WrapperModal';
+import MySelect from '@/components/UI/Inputs/MySelect';
+import ModalWrapper from '@/components/Modal/ModalWrapper';
 
-const MenuModal = ({ visible, setVisible, menuItem }) => {
+const MenuCreatorModal = ({ visible, setVisible, menuItem }) => {
     const [action, setAction] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -35,7 +33,8 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
         deleteExtra: deleteSize
     } = useExtra(category, 'sizes');
 
-    const { menuData, menuActions } = useContext(MenuContext);
+    const { menuData, loadingModal, setLoadingModal, menuActions } =
+        useContext(MenuContext);
 
     const onChangeMenuPhoto = (link) => {
         setImage(link);
@@ -43,6 +42,8 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
 
     const submitForm = async (e) => {
         e.preventDefault();
+
+        // Регулярное выражение для корректного ввода цены
         const regex = /^[1-9]\d*$/;
 
         if (!name) {
@@ -79,30 +80,10 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                 })
             };
 
-            const promise = axios.post('/api/menu', newItem).then((res) => {
-                if (res.status === 200) {
-                    setVisible(false);
-                    newItem['id'] = res.data.id;
-                    menuActions.addMenuItem(newItem);
-                } else {
-                    toast.error('Error on Database!');
-                }
-            });
-
-            await toast.promise(promise, {
-                loading: 'Loading...',
-                success: 'Success!',
-                error: (err) => `${err}`
-            });
-
-            const root = document.getElementById('root');
-            root.style.overflow = 'auto';
-            root.style.marginRight = '0';
-
-            return;
-        }
-
-        if (action === 'update') {
+            await menuActions.handleAddNewMenuItem(newItem, () =>
+                setVisible(false)
+            );
+        } else {
             const categoryFromMenu = menuData.categories.find(
                 (item) => item.name === category.value
             );
@@ -122,25 +103,14 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                 })
             };
 
-            const promise = axios.put('/api/menu', updatedItem).then((res) => {
-                if (res.status === 200) {
-                    setVisible(false);
-                    menuActions.updateMenuItem(updatedItem.id, updatedItem);
-                } else {
-                    toast.error('Error on Database!');
-                }
-            });
-
-            await toast.promise(promise, {
-                loading: 'Loading...',
-                success: 'Success!',
-                error: (err) => `${err}`
-            });
-
-            const root = document.getElementById('root');
-            root.style.overflow = 'auto';
-            root.style.marginRight = '0';
+            await menuActions.handleUpdateMenuItem(updatedItem, () =>
+                setVisible(false)
+            );
         }
+
+        const root = document.getElementById('root');
+        root.style.overflow = 'auto';
+        root.style.marginRight = '0';
     };
 
     useEffect(() => {
@@ -175,10 +145,14 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
     };
 
     return (
-        <WrapperModal visible={visible} setVisible={closeModal}>
+        <ModalWrapper
+            visible={visible}
+            setVisible={closeModal}
+            closeColor={'white'}
+        >
             <form
                 className={
-                    'scrollable relative flex h-full w-full flex-col justify-between gap-4 bg-white px-8 py-16 md:h-fit md:max-h-[90%] md:w-1/3 md:min-w-[500px] md:rounded-lg md:py-8'
+                    'scrollable relative flex h-full w-full flex-col justify-between gap-4 bg-white px-8 py-16 md:h-fit md:max-h-[90%] md:min-h-[500px] md:w-1/3 md:min-w-[500px] md:rounded-lg md:py-8'
                 }
                 onSubmit={(e) => submitForm(e)}
                 onMouseDown={(e) => e.stopPropagation()}
@@ -190,8 +164,8 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                 >
                     <ImageUpload
                         image={image}
-                        fetching={loading}
-                        setFetching={setLoading}
+                        fetching={loadingModal}
+                        setFetching={setLoadingModal}
                         onChange={onChangeMenuPhoto}
                         imageClassname={
                             'border-none object-contain object-center'
@@ -200,18 +174,21 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                     <div className={'mt-4 flex h-fit w-full flex-col gap-8'}>
                         <Input
                             label={'Name'}
+                            disabled={loadingModal}
                             value={name}
                             placeholder={'Pepperoni pizza'}
                             onChange={(e) => setName(e.target.value)}
                         />
                         <Input
                             label={'Description (optional)'}
+                            disabled={loadingModal}
                             value={description}
                             placeholder={'Very tasty pizza!'}
                             onChange={(e) => setDescription(e.target.value)}
                         />
                         <Input
                             label={'Price'}
+                            disabled={loadingModal}
                             value={price}
                             placeholder={'10$'}
                             onChange={(e) => setPrice(e.target.value)}
@@ -234,10 +211,10 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
 
                 {category.value === 'Pizza' && (
                     <div className={'flex h-fit w-full flex-col gap-4'}>
-                        <ToggleBar title={`Sizes (${sizes.length})`}>
+                        <ToggleMenu title={`Sizes (${sizes.length})`}>
                             {sizes.length !== 0 ? (
                                 sizes.map((size) => (
-                                    <ExtrasItem
+                                    <ExtraItemCard
                                         key={size.id}
                                         item={size}
                                         changeCallback={changeSize}
@@ -260,18 +237,19 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                                 className={
                                     '!rounded-md hover:!bg-black hover:!text-white'
                                 }
+                                disabled={loadingModal}
                                 onClick={addSize}
                             >
                                 Add size
                             </Button>
-                        </ToggleBar>
+                        </ToggleMenu>
 
-                        <ToggleBar
+                        <ToggleMenu
                             title={`Extra ingredients (${ingredients.length})`}
                         >
                             {ingredients.length !== 0 ? (
                                 ingredients.map((ingredient) => (
-                                    <ExtrasItem
+                                    <ExtraItemCard
                                         key={ingredient.id}
                                         item={ingredient}
                                         changeCallback={changeIngredient}
@@ -294,24 +272,25 @@ const MenuModal = ({ visible, setVisible, menuItem }) => {
                                 className={
                                     '!rounded-md hover:!bg-black hover:!text-white'
                                 }
+                                disabled={loadingModal}
                                 onClick={addIngredient}
                             >
                                 Add ingredient
                             </Button>
-                        </ToggleBar>
+                        </ToggleMenu>
                     </div>
                 )}
 
                 <Button
                     type={'submit'}
                     className={'!mt-auto !rounded-lg'}
-                    disabled={loading}
+                    disabled={loadingModal}
                 >
                     Submit
                 </Button>
             </form>
-        </WrapperModal>
+        </ModalWrapper>
     );
 };
 
-export default MenuModal;
+export default MenuCreatorModal;

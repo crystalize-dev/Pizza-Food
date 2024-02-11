@@ -1,21 +1,18 @@
 'use client';
 import React, { useContext, useState } from 'react';
-import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
-import Button from '@/components/UI/Button';
+import AdminPanelWrapper from '@/components/PageSections/AdminPanelWrapper';
+import Button from '@/components/UI/Buttons/Button';
 import { AnimatePresence } from 'framer-motion';
-import MenuItem from '@/components/cards/MenuItem';
-import MenuModal from '@/components/Modal/MenuModal';
-import { MenuContext } from '@/components/AppContext';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import MenuItemCard from '@/components/cards/MenuItemCard';
+import MenuCreatorModal from '@/components/Modal/MenuCreatorModal';
+import { MenuContext } from '@/context/AppContext';
 import Icon from '@/components/icon/Icon';
 
 const Page = () => {
     const [active, setActive] = useState(null);
     const [modal, setModal] = useState(false);
-    const [loading, setLoading] = useState(false);
 
-    const { menuData, menuActions } = useContext(MenuContext);
+    const { menuData, menuActions, loadingModal } = useContext(MenuContext);
 
     const openModal = (menuItem) => {
         setActive(menuItem);
@@ -23,31 +20,12 @@ const Page = () => {
     };
 
     const handleDelete = async (menuItem) => {
-        setLoading(true);
-
-        const promise = axios
-            .delete('/api/menu', { data: menuItem })
-            .then((res) => {
-                if (res.status === 200) {
-                    menuActions.deleteMenuItem(menuItem.id);
-                } else {
-                    toast.error('Error on DataBase!');
-                }
-            })
-            .catch((err) => toast.error(err));
-
-        await toast.promise(promise, {
-            loading: 'Deleting...',
-            success: 'Menu item deleted!',
-            error: 'Some error occurred!'
-        });
-
-        setLoading(false);
+        await menuActions.handleDeleteMenuItem(menuItem);
     };
 
     return (
         <AdminPanelWrapper title={'menu-items'} isAdmin={true}>
-            <MenuModal
+            <MenuCreatorModal
                 menuItem={active}
                 visible={modal}
                 setVisible={setModal}
@@ -57,7 +35,7 @@ const Page = () => {
                 type={'button'}
                 variant={'submit'}
                 className={'mb-4 mt-16 !w-fit !rounded-lg md:my-8'}
-                disabled={loading}
+                disabled={loadingModal}
                 onClick={() => openModal(null)}
             >
                 <Icon icon={'plus'} className={'h-6 w-6 !p-0'} />
@@ -68,17 +46,17 @@ const Page = () => {
                     {menuData?.menu.length === 0 ? (
                         <p
                             className={
-                                'my-8 text-center text-3xl text-gray-400'
+                                'my-8 text-center text-3xl text-zinc-300'
                             }
                         >
                             Nothing found!
                         </p>
                     ) : (
                         menuData.menu.map((item, index) => (
-                            <MenuItem
+                            <MenuItemCard
                                 key={item.id}
                                 menuItem={item}
-                                loading={loading}
+                                loading={loadingModal}
                                 index={index}
                                 openModal={openModal}
                                 handleDeleteItem={handleDelete}

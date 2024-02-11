@@ -1,10 +1,10 @@
 import React from 'react';
-import SectionHeaders from '../UI/SectionHeaders';
+import SectionHeader from '../UI/SectionHeader';
 
 export default function ContactUs() {
     return (
         <section className="my-8 text-center">
-            <SectionHeaders
+            <SectionHeader
                 subHeader={"Dont't hesitate"}
                 mainHeader={'Contact us'}
             />

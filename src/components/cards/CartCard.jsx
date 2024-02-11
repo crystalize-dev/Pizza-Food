@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import Image from 'next/image';
 import Icon from '@/components/icon/Icon';
-import { CartContext, ModalContext } from '@/components/AppContext';
+import { CartContext } from '@/context/AppContext';
 import { motion } from 'framer-motion';
-import AmountPicker from '@/components/UI/AmountPicker';
+import AmountPicker from '@/components/UI/Inputs/AmountPicker';
 
-const CartItemCard = ({ cartItem, index }) => {
+const CartCard = ({ cartItem, index }) => {
     const { deleteFromCart, increaseAmount, decreaseAmount } =
         useContext(CartContext);
 
@@ -99,4 +99,4 @@ const CartItemCard = ({ cartItem, index }) => {
     );
 };
 
-export default CartItemCard;
+export default CartCard;

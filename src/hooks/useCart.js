@@ -3,17 +3,21 @@ import _ from 'lodash';
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { UserDataContext } from '@/components/AppContext';
+import { UserDataContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
+import { customAxios } from '@/axios/customAxios';
 
 export const useCart = (user) => {
     const [cart, setCart] = useState([]);
-    const userCart = cart.filter((cartItem) => cartItem.user === user?.email);
+    const userCart = cart.filter((cartItem) => cartItem.user === user?.email); // Корзина конкретного пользователя
+
     const [fetching, setFetching] = useState(false);
 
     const router = useRouter();
 
     const { setUserData } = useContext(UserDataContext);
+
+    const url = 'profile';
 
     // Добавить в корзину. Если уже есть, то увеличить на 1 в корзине
     const addToCart = (item) => {
@@ -28,24 +32,22 @@ export const useCart = (user) => {
         else setCart([...cart, newItem]);
     };
 
-    // Увеличить число продукта в корзине. Если больше 99, то не увеличивать
-
     // Удалить из корзины
     const deleteFromCart = (item) => {
-        setCart([...cart.filter((cartItem) => !_.isEqual(cartItem, item))]);
+        setCart(cart.filter((cartItem) => !_.isEqual(cartItem, item)));
     };
 
     // Увеличить число продукта в корзине. Если больше 99, то не увеличивать
     const increaseAmount = (item) => {
         if (item.amount + 1 > 99) return;
 
-        setCart([
-            ...cart.map((cartItem) => {
+        setCart(
+            cart.map((cartItem) => {
                 if (_.isEqual(item, cartItem))
                     return { ...item, amount: item.amount + 1 };
                 else return cartItem;
             })
-        ]);
+        );
     };
 
     // Уменьшить число продукта в корзине. Если меньше 1, то удалить из корзины
@@ -74,33 +76,22 @@ export const useCart = (user) => {
                 description,
                 ...newCartItem
             } = cartItem;
-            return newCartItem;
+            return newCartItem; // Удаляем лишние поля
         });
-
-        setFetching(true);
-        const promise = axios
-            .put('/api/profile', {
+        await customAxios('PUT', url, setFetching, {
+            data: {
                 user: user,
                 order: { price: price, orderItems: newCart }
-            })
-            .then((response) => {
-                setFetching(false);
-                if (response.status === 200) {
-                    setUserData(response.data);
-                    setCart([]);
-                    localStorage.setItem('cart', '[]');
-
-                    router.push(`/orders/${response.data.id}`);
-                }
-            });
-
-        await toast.promise(promise, {
-            loading: 'Please wait...',
-            success: 'Order success!',
-            error: 'Some error occurred!'
+            },
+            actionOnSuccess: (data) => {
+                setUserData(data);
+                setCart([]);
+                localStorage.setItem('cart', '[]');
+                router.push(`/orders/${data.id}`);
+            },
+            loadingString: 'Proceeding order...',
+            successString: 'Proceeded!'
         });
-
-        setFetching(false);
     };
 
     if (typeof window !== 'undefined') {

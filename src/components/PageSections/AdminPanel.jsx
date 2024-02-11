@@ -1,16 +1,21 @@
 import React from 'react';
-import Button from '@/components/UI/Button';
+import Button from '@/components/UI/Buttons/Button';
 import Link from 'next/link';
 import Icon from '@/components/icon/Icon';
 
-const AdminPanel = ({ active = 'profile' }) => {
-    const links = [
-        { path: 'profile', icon: 'profile' },
-        { path: 'categories', icon: 'tag' },
-        { path: 'menu-items', icon: 'cake' },
-        { path: 'users', icon: 'users' },
-        { path: 'orders', icon: 'shop' }
-    ];
+const AdminPanel = ({ active = 'profile', isAdmin }) => {
+    const links = isAdmin
+        ? [
+              { path: 'profile', icon: 'profile' },
+              { path: 'categories', icon: 'tag' },
+              { path: 'menu-items', icon: 'cake' },
+              { path: 'users', icon: 'users' },
+              { path: 'orders', icon: 'shop' }
+          ]
+        : [
+              { path: 'profile', icon: 'profile' },
+              { path: 'orders', icon: 'shop' }
+          ];
 
     return (
         <div

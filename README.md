@@ -2,18 +2,15 @@
 
 # Todo:
 
-- Orders page (Admin)
-- Address warning on submit payment!!!
+- Payment page
+- Address input on Payment page
+- Orders page (Admin + User)
 
 # Not in rush
 
 - Fix slider blinking in sizes preview
 - Pizza loader
-- Categories page (menuItems list preview e.g. some of them)
-- Sort by category in menuItems (Admin page)
-- Icons on basic Categories
-- ID on images posting
+- Sort by category in menuItems (on Admin page)
 - All pages (Beautify)
-- Great refactor
   
 # !!!Tests!!!

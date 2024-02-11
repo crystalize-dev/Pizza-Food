@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Icon from '@/components/icon/Icon';
 
-const WrapperModal = ({
+const ModalWrapper = ({
     visible,
     setVisible,
     children,
@@ -39,7 +39,11 @@ const WrapperModal = ({
                     <Icon
                         icon={'close'}
                         onClick={closeModal}
-                        className={`absolute right-2 top-2 z-50 transition-all hover:scale-125 md:!text-${closeColor}`}
+                        className={`absolute right-2 top-2 z-50 transition-all hover:scale-125 ${
+                            closeColor !== 'white'
+                                ? `!text-${closeColor} md:!text-${closeColor}`
+                                : 'text-black md:text-white'
+                        }`}
                     />
 
                     {children}
@@ -49,4 +53,4 @@ const WrapperModal = ({
     );
 };
 
-export default WrapperModal;
+export default ModalWrapper;

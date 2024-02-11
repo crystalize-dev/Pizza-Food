@@ -13,20 +13,29 @@ export default async function middleware(req: NextRequest) {
         secret: process.env.AUTH_SECRET
     });
 
-    const protectedPaths = [
+    const authPaths = [
         '/profile',
         '/categories',
         '/menu-items',
         '/users',
-        '/orders'
+        '/orders',
+        '/payment'
     ];
 
-    const isProtected = !!protectedPaths.find((protectedPath) =>
-        protectedPath.includes(path)
+    const adminPaths = ['/categories', '/menu-items', '/users'];
+
+    const isProtected = !!authPaths.find((authPath) => authPath.includes(path));
+
+    const adminProtected = !!adminPaths.find((adminPath) =>
+        adminPath.includes(path)
     );
 
     if (!session && isProtected) {
         return NextResponse.redirect(new URL('/login', req.url));
+    } else {
+        if (!session?.admin && adminProtected) {
+            return NextResponse.redirect(new URL('/', req.url));
+        }
     }
 
     return NextResponse.next();

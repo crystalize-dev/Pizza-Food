@@ -1,18 +1,21 @@
 'use client';
-import React, { useState } from 'react';
-import Input from '@/components/UI/Input';
-import Button from '@/components/UI/Button';
-import CategoryItem from '@/components/cards/CategoryItem';
+import React, { useContext, useState } from 'react';
+import Input from '@/components/UI/Inputs/Input';
+import Button from '@/components/UI/Buttons/Button';
+import CategoryCard from '@/components/cards/CategoryCard';
 import { AnimatePresence } from 'framer-motion';
 import { useCategories } from '@/hooks/useCategories';
-import AdminPanelWrapper from '@/components/Layout/AdminPanelWrapper';
+import AdminPanelWrapper from '@/components/PageSections/AdminPanelWrapper';
+import { MenuContext } from '@/context/AppContext';
 
 const Page = () => {
     const [currentEditing, setCurrentEditing] = useState(null);
     const [categoryName, setCategoryName] = useState('');
 
-    const { handleUpdate, handleDelete, handleNewCategory, loading, menuData } =
+    const { handleUpdate, handleDelete, handleNewCategory, loading } =
         useCategories({ categoryName, setCategoryName });
+
+    const { menuData } = useContext(MenuContext);
 
     return (
         <AdminPanelWrapper title={'categories'} isAdmin={true}>
@@ -52,7 +55,7 @@ const Page = () => {
                         </p>
                     ) : (
                         menuData.categories.map((category, index) => (
-                            <CategoryItem
+                            <CategoryCard
                                 key={category.id}
                                 index={index}
                                 category={category}

@@ -3,14 +3,14 @@ import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext, useState } from 'react';
-import Button from '../UI/Button';
+import Button from '../UI/Buttons/Button';
 import Icon from '../icon/Icon';
 import MobileModal from '@/components/Modal/MobileModal';
 import {
     CartContext,
     ModalContext,
     UserDataContext
-} from '@/components/AppContext';
+} from '@/context/AppContext';
 
 export default function Header() {
     const [sidebar, setSidebar] = useState(false);
