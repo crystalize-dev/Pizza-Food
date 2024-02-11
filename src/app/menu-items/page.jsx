@@ -7,10 +7,15 @@ import MenuItemCard from '@/components/cards/MenuItemCard';
 import MenuCreatorModal from '@/components/Modal/MenuCreatorModal';
 import { MenuContext } from '@/context/AppContext';
 import Icon from '@/components/icon/Icon';
+import CategorySelector from '@/components/UI/Inputs/CategorySelector';
 
 const Page = () => {
     const [active, setActive] = useState(null);
     const [modal, setModal] = useState(false);
+    const [activeFilter, setActiveFilter] = useState({
+        value: 'All',
+        label: 'All'
+    });
 
     const { menuData, menuActions, loadingModal } = useContext(MenuContext);
 
@@ -23,26 +28,61 @@ const Page = () => {
         await menuActions.handleDeleteMenuItem(menuItem);
     };
 
+    const customSort = (array) => {
+        const sortedArray = array.slice();
+
+        sortedArray.sort(function (a, b) {
+            const order = { Pizza: 1, Drinks: 2, Deserts: 3 };
+
+            const orderA = order[a.category.name] || 9999; // Если элемент не входит в указанные, ставим его в конец
+            const orderB = order[b.category.name] || 9999;
+
+            // Сравниваем порядковые номера
+            return orderA - orderB;
+        });
+
+        if (activeFilter.value === 'All') {
+            return sortedArray;
+        } else {
+            return sortedArray.filter(
+                (item) => item.category.name === activeFilter.value
+            );
+        }
+    };
+
     return (
-        <AdminPanelWrapper title={'menu-items'} isAdmin={true}>
+        <AdminPanelWrapper title={'menu-items'}>
             <MenuCreatorModal
                 menuItem={active}
                 visible={modal}
                 setVisible={setModal}
             />
 
-            <Button
-                type={'button'}
-                variant={'submit'}
-                className={'mb-4 mt-16 !w-fit !rounded-lg md:my-8'}
-                disabled={loadingModal}
-                onClick={() => openModal(null)}
+            <div
+                className={
+                    'flex h-fit w-full items-center justify-between gap-4'
+                }
             >
-                <Icon icon={'plus'} className={'h-6 w-6 !p-0'} />
-                Create new
-            </Button>
+                <Button
+                    type={'button'}
+                    variant={'submit'}
+                    className={'mb-4 mt-16 !w-fit !rounded-lg md:my-8'}
+                    disabled={loadingModal}
+                    onClick={() => openModal(null)}
+                >
+                    <Icon icon={'plus'} className={'h-6 w-6 !p-0'} />
+                    Create new
+                </Button>
+
+                <CategorySelector
+                    type={'selector'}
+                    activeFilter={activeFilter}
+                    setActiveFilter={setActiveFilter}
+                />
+            </div>
+
             <ul className={'flex w-full flex-col gap-2'}>
-                <AnimatePresence>
+                <AnimatePresence mode={'wait'}>
                     {menuData?.menu.length === 0 ? (
                         <p
                             className={
@@ -52,7 +92,7 @@ const Page = () => {
                             Nothing found!
                         </p>
                     ) : (
-                        menuData.menu.map((item, index) => (
+                        customSort(menuData.menu).map((item, index) => (
                             <MenuItemCard
                                 key={item.id}
                                 menuItem={item}

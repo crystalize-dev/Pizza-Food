@@ -1,9 +1,6 @@
 'use client';
 import _ from 'lodash';
-import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { UserDataContext } from '@/context/AppContext';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { customAxios } from '@/axios/customAxios';
 
@@ -14,8 +11,6 @@ export const useCart = (user) => {
     const [fetching, setFetching] = useState(false);
 
     const router = useRouter();
-
-    const { setUserData } = useContext(UserDataContext);
 
     const url = 'profile';
 
@@ -63,7 +58,15 @@ export const useCart = (user) => {
             );
     };
 
-    const proceedOrder = async ({ price }) => {
+    const formatDate = (date) => {
+        return (
+            date.toLocaleDateString('ru-RU') +
+            ' ' +
+            date.toLocaleTimeString('ru-RU')
+        );
+    };
+
+    const proceedOrder = async ({ price, address }) => {
         const newCart = userCart.map((cartItem) => {
             const {
                 id,
@@ -81,13 +84,20 @@ export const useCart = (user) => {
         await customAxios('PUT', url, setFetching, {
             data: {
                 user: user,
-                order: { price: price, orderItems: newCart }
+                order: {
+                    price: price,
+                    address: address,
+                    orderItems: newCart,
+                    date: formatDate(new Date())
+                }
             },
             actionOnSuccess: (data) => {
-                setUserData(data);
                 setCart([]);
                 localStorage.setItem('cart', '[]');
                 router.push(`/orders/${data.id}`);
+            },
+            actionOnFailure: (err) => {
+                console.log(err);
             },
             loadingString: 'Proceeding order...',
             successString: 'Proceeded!'

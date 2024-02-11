@@ -31,7 +31,9 @@ export async function PUT(req) {
         try {
             const newOrder = await prisma.order.create({
                 data: {
+                    date: order.date,
                     price: order.price,
+                    address: order.address,
                     user: {
                         connect: {
                             email: user.email

@@ -18,7 +18,7 @@ const Page = () => {
     const { menuData } = useContext(MenuContext);
 
     return (
-        <AdminPanelWrapper title={'categories'} isAdmin={true}>
+        <AdminPanelWrapper title={'categories'}>
             <form
                 onSubmit={handleNewCategory}
                 className={

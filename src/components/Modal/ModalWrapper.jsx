@@ -6,23 +6,29 @@ const ModalWrapper = ({
     visible,
     setVisible,
     children,
-    closeColor = 'white'
+    closeColor = 'white',
+    blockScroll = true
 }) => {
     const closeModal = () => {
-        const root = document.getElementById('root');
-        root.style.overflow = 'auto';
-        root.style.marginRight = '0';
+        if (blockScroll) {
+            const root = document.getElementById('root');
+            root.style.overflow = 'auto';
+            root.style.marginRight = '0';
+        }
+
         setVisible(false);
     };
 
     useEffect(() => {
-        const root = document.getElementById('root');
+        if (blockScroll) {
+            const root = document.getElementById('root');
 
-        if (visible) {
-            root.style.overflow = 'hidden';
-            root.style.marginRight = '9px';
+            if (visible) {
+                root.style.overflow = 'hidden';
+                root.style.marginRight = '9px';
+            }
         }
-    }, [visible]);
+    }, [blockScroll, visible]);
 
     return (
         <AnimatePresence>

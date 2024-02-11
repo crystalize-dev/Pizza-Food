@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import ModalWrapper from '@/components/Modal/ModalWrapper';
 import { CartContext, ModalContext } from '@/context/AppContext';
 import Image from 'next/image';
-import StyledSelect from '@/components/UI/Inputs/StyledSelect';
+import SizePicker from '@/components/UI/Inputs/SizePicker';
 import IngredientsPicker from '@/components/UI/Inputs/IngredientsPicker';
 import Button from '@/components/UI/Buttons/Button';
 import toast from 'react-hot-toast';
@@ -90,7 +90,7 @@ const MenuItemModal = () => {
                         {menuItemModal.description}
                     </p>
 
-                    <StyledSelect
+                    <SizePicker
                         id={'sizes'}
                         options={menuItemModal.sizes}
                         active={activeSize}

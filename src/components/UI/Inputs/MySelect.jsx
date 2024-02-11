@@ -1,7 +1,14 @@
 import React from 'react';
 import Select from 'react-select';
 
-const MySelect = ({ options, current, setCurrent, placeholder, label }) => {
+const MySelect = ({
+    options,
+    current,
+    setCurrent,
+    placeholder,
+    label,
+    className
+}) => {
     const customStyles = {
         control: (provided, state) => ({
             ...provided,
@@ -63,7 +70,11 @@ const MySelect = ({ options, current, setCurrent, placeholder, label }) => {
     };
 
     return (
-        <div className={'relative flex h-fit w-full flex-col-reverse'}>
+        <div
+            className={`relative flex h-fit w-full flex-col-reverse ${
+                className && className
+            }`}
+        >
             <Select
                 placeholder={placeholder}
                 value={current}

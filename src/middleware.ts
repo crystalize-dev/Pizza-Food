@@ -26,16 +26,14 @@ export default async function middleware(req: NextRequest) {
 
     const isProtected = !!authPaths.find((authPath) => authPath.includes(path));
 
-    const adminProtected = !!adminPaths.find((adminPath) =>
-        adminPath.includes(path)
-    );
+    const adminProtected = !!adminPaths.find((adminPath) => adminPath === path);
 
     if (!session && isProtected) {
         return NextResponse.redirect(new URL('/login', req.url));
-    } else {
-        if (!session?.admin && adminProtected) {
-            return NextResponse.redirect(new URL('/', req.url));
-        }
+    }
+
+    if (!session?.admin && adminProtected) {
+        return NextResponse.redirect(new URL('/', req.url));
     }
 
     return NextResponse.next();

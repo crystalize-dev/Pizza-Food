@@ -16,15 +16,13 @@ export default function MenuItemCard({
         visible: (i) => ({
             opacity: 1,
             x: 0,
-            transition: { delay: i * 0.1 }
+            transition: { delay: i * 0.05 }
         }),
-        hidden: {
+        hidden: (i) => ({
             opacity: 0,
             x: -50,
-            transition: {
-                delay: 0
-            }
-        }
+            transition: { delay: i * 0.05 }
+        })
     };
 
     return (

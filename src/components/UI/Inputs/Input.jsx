@@ -9,7 +9,11 @@ export default function Input({ label = 'Default label', ...props }) {
     }
 
     return (
-        <label className="relative flex h-fit w-full flex-col-reverse">
+        <label
+            className={`relative flex h-fit w-full flex-col-reverse ${
+                className && className
+            }`}
+        >
             <input
                 className="text-font-semibold w-full rounded-lg bg-transparent px-4 py-2 outline outline-2 outline-black/40 transition-all hover:outline-black/80 focus:outline-primary disabled:cursor-not-allowed disabled:text-gray-400 disabled:outline-black/20"
                 {...otherProps}

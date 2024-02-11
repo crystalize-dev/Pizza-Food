@@ -19,7 +19,7 @@ const Page = () => {
     };
 
     return (
-        <AdminPanelWrapper title={'users'} isAdmin={true}>
+        <AdminPanelWrapper title={'users'}>
             <UserEditModal
                 updateUser={handleUpdateUser}
                 loading={loading}

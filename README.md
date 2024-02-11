@@ -2,15 +2,11 @@
 
 # Todo:
 
-- Payment page
-- Address input on Payment page
-- Orders page (Admin + User)
+- Order id page optimization (One at time)
 
 # Not in rush
 
-- Fix slider blinking in sizes preview
 - Pizza loader
-- Sort by category in menuItems (on Admin page)
 - All pages (Beautify)
   
 # !!!Tests!!!

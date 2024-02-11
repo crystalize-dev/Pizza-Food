@@ -1,15 +1,18 @@
 'use client';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext, ModalContext } from '@/context/AppContext';
 import ModalWrapper from '@/components/Modal/ModalWrapper';
 import { AnimatePresence, motion } from 'framer-motion';
 import CartCard from '@/components/cards/CartCard';
 import Image from 'next/image';
 import Button from '@/components/UI/Buttons/Button';
+import PaymentModal from '@/components/Modal/PaymentModal';
 
 const AsideCartModal = () => {
     const { cartModal, toggleCartModal } = useContext(ModalContext);
     const { userCart, proceedOrder, fetching } = useContext(CartContext);
+
+    const [paymentModal, setPaymentModal] = useState(false);
 
     const calculateSum = () => {
         return userCart.reduce((acc, curr) => {
@@ -17,10 +20,11 @@ const AsideCartModal = () => {
         }, userCart[0]?.price);
     };
 
-    const submitForm = (e) => {
+    const submitForm = async (e) => {
         e.preventDefault();
+        setPaymentModal(false);
 
-        proceedOrder({ price: calculateSum() });
+        await proceedOrder({ price: calculateSum() });
 
         toggleCartModal(false);
     };
@@ -41,6 +45,11 @@ const AsideCartModal = () => {
                     'relative ml-auto flex h-full w-full flex-col bg-[#f3f3f7] md:min-w-[500px] md:max-w-[25%]'
                 }
             >
+                <PaymentModal
+                    visible={paymentModal}
+                    setVisible={setPaymentModal}
+                />
+
                 {userCart.length === 0 ? (
                     <div
                         className={
@@ -132,7 +141,9 @@ const AsideCartModal = () => {
                             <Button
                                 disabled={fetching}
                                 className={'mt-auto'}
-                                type={'submit'}
+                                variant={'submit'}
+                                type={'button'}
+                                onClick={() => setPaymentModal(true)}
                             >
                                 Checkout
                             </Button>
